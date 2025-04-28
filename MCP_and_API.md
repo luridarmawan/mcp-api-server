@@ -1,5 +1,28 @@
 # MCP vs Traditional API
 
+
+<!-- TOC -->
+<details>
+<summary>📑 Daftar Isi</summary>
+
+- [API & MCP Server Skeleton (ElysiaJS + Bun)](README.md)
+- [MCP vs Traditional API](#mcp-vs-traditional-api)
+  - [1. Apa itu MCP](#1-apa-itu-mcp)
+  - [2. Cara Kerja MCP](#2-cara-kerja-mcp)
+  - [3. Perbedaan MCP vs API](#3-perbedaan-mcp-vs-api)
+  - [4. Arsitektur MCP](#4-arsitektur-mcp)
+  - [5. Plugin MCP](#5-plugin-mcp)
+  - [6. Analogi MCP](#6-analogi-mcp)
+  - [7. Kenapa MCP](#7-kenapa-mcp)
+  - [8. MCP vs Agent vs Tool](#8-mcp-vs-agent-vs-tool)
+  - [9. MCP Discovery](#9-mcp-discovery)
+  - [10. FAQ Singkat](#10-faq-singkat)
+  - [11. TL;DR](#11-tldr)
+
+</details>
+
+---
+
 ## 1. Apa itu MCP
 
 Model Context Protocol (MCP) adalah protokol komunikasi ringan untuk memungkinkan LLM berinteraksi secara kontekstual dengan API, database, atau aplikasi. Memberikan pendekatan atau protokol komunikasi yang dirancang khusus untuk memungkinkan model bahasa besar (LLM) seperti ChatGPT berinteraksi secara kontekstual dan terus-menerus dengan sistem eksternal—baik API, database, atau aplikasi nyata. Mari kita bahas cara kerjanya dan perbedaannya dengan API biasa:

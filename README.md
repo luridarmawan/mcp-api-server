@@ -8,6 +8,25 @@
 
 __(Documentation is not yet complete.)__
 
+<!-- TOC -->
+<details>
+<summary>📑 Daftar Isi</summary>
+
+- [API & MCP Server Skeleton (ElysiaJS + Bun)](#api--mcp-server-skeleton-elysiajs--bun)
+  - [🚀 Features](#-features)
+  - [📌 Requirements](#-requirements)
+  - [🛠️ Getting Started](#-getting-started)
+  - [🧠 Model Context Protocol (MCP)](#-model-context-protocol-mcp)
+  - [🔌 WebSocket Usage](#-websocket-usage)
+  - [📁 Project Structure](#-project-structure)
+  - [🚀 Deployment](#-deployment)
+  - [🔖 License](#-license)
+  - [📘 References](#-references)
+- [MCP vs Traditional API](MCP_and_API.md)
+</details>
+
+---
+
 A lightweight, high-performance API Server using [ElysiaJS](https://elysiajs.com/) with [Bun](https://bun.sh/) runtime, integrated with Model Context Protocol (MCP) and WebSocket support.
 
 
