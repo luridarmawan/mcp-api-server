@@ -14,6 +14,7 @@ A lightweight, high-performance API Server using [ElysiaJS](https://elysiajs.com
 
 - REST API Server with Bun runtime.
 - Model Context Protocol (MCP) base support.
+- MCP Discovery Endpoint / .well-known/mcp.json supported
 - WebSocket Event Handling (realtime communication).
 - Example Events: Prayer Schedule, Event Registration.
 - Hot reload during development.
@@ -51,6 +52,7 @@ Open http://localhost:3000 in your browser.
 MCP is a lightweight communication protocol designed to enable context-aware interactions with AI agents or applications.
 
 - **Base URL**: http://localhost:3000/mcp
+- **Discovery Endpoint**: http://localhost:3000/mcp/.well-known/mcp.json
 - **Request/Response Format**: JSON
 
 Example basic MCP interaction via WebSocket:
