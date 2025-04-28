@@ -1,9 +1,11 @@
-# Antara MCP dan API
+# MCP vs Traditional API
 
-Model Context Protocol (MCP) adalah pendekatan atau protokol komunikasi yang dirancang khusus untuk memungkinkan model bahasa besar (LLM) seperti ChatGPT berinteraksi secara kontekstual dan terus-menerus dengan sistem eksternal—baik API, database, atau aplikasi nyata. Mari kita bahas cara kerjanya dan perbedaannya dengan API biasa:
+## 1. Apa itu MCP
+
+Model Context Protocol (MCP) adalah protokol komunikasi ringan untuk memungkinkan LLM berinteraksi secara kontekstual dengan API, database, atau aplikasi. Memberikan pendekatan atau protokol komunikasi yang dirancang khusus untuk memungkinkan model bahasa besar (LLM) seperti ChatGPT berinteraksi secara kontekstual dan terus-menerus dengan sistem eksternal—baik API, database, atau aplikasi nyata. Mari kita bahas cara kerjanya dan perbedaannya dengan API biasa:
 
 
-## Cara Kerja MCP (Model Context Protocol)
+## 2. Cara Kerja MCP
 
 MCP bekerja dengan mengelola dan mempertahankan konteks interaksi antara LLM dan dunia luar. Komponen intinya biasanya meliputi:
 
@@ -31,7 +33,7 @@ MCP bekerja dengan mengelola dan mempertahankan konteks interaksi antara LLM dan
 
 Model Context Protocol (MCP) adalah metode **de facto** standar untuk membuat API server bisa dikenali, dipanggil, dan dieksekusi oleh **agent** dan **LLM** berbasis fungsi JSON.
 
-## 🔁 Perbedaan dengan API Biasa
+## 3. 🔁 Perbedaan MCP vs Traditional API
 
 | Fitur | API Biasa | Model Context Protocol (MCP) |
 |---|---|---|
@@ -43,21 +45,8 @@ Model Context Protocol (MCP) adalah metode **de facto** standar untuk membuat AP
 | **Tujuan utama** | Akses data/fungsi spesifik | Meningkatkan kapabilitas LLM dalam bertindak |
 
 
-## 🧠 Contoh Penggunaan MCP
 
-Misalnya punya aplikasi yang:
-- Mendeteksi lokasi perangkat Android
-- Menyimpan data ke Firestore
-- Bisa dikontrol jarak jauh
-
-Jika menggunakan MCP, LLM bisa:
-- Paham struktur Firestore dan koleksinya
-- Mengetahui cara memanggil fungsi lockDevice() atau ringDevice()
-- Melakukan query data sebelumnya
-- Mengambil keputusan seperti: "Apakah perangkat sudah bergerak dari lokasi terakhir? Jika iya, kirim perintah kunci."
-
-
-## 🧠 Arsitektur MCP dengan Beberapa Sumber
+## 4. 🧠 Arsitektur MCP dengan Beberapa Sumber
 
 Contoh arsitektur MCP yang menggunakan beberapa plugin dan internal API.
 
@@ -78,21 +67,37 @@ Contoh arsitektur MCP yang menggunakan beberapa plugin dan internal API.
          │              │
          ▼              ▼
 ┌───────────────┐   ┌────────────────────┐
-│ Firestore DB  │   │ Internal Event API │
+│ Database      │   │ Internal Event API │
 └───────────────┘   └────────────────────┘
 
 ```
 
 
-### 📦 Plugin MCP
+## 5. 📦 Plugin MCP
 
 **Deskriptif**: berisi schema (nama fungsi, parameter, deskripsi)
-
 **Eksekutor**: handler di MCP Server (biasanya HTTP POST) yang menjalankan aksi → manggil API
 
+Schema plugin MCP berbentuk JSON, contoh:
 
-## 🔍 Analogi Gampangnya
+```json
+{
+  "name": "Device Control MCP",
+  "functions": [
+    {
+      "name": "sendRemoteCommand",
+      "parameters": {
+        "serial": "string",
+        "command": "lock | wipe | ring"
+      }
+    }
+  ]
+}
+```
 
+## 6. 🔍 Analogi MCP
+
+MCP itu seperti sekretaris pintar yang tahu caranya menghubungi banyak departemen hanya dengan 1 instruksi.
 Misalnya kita bilang ke ChatGPT:
 
 `“Daftarkan saya ke event dengan ID A123.”`
@@ -103,7 +108,7 @@ Misalnya kita bilang ke ChatGPT:
 4. MCP Server terima request → manggil API via fetch() atau axios
 5. Respon (sukses/gagal) dikembalikan ke LLM
 
-## 🧱 Jadi Arsitekturnya Sebenarnya Begini
+### 🧱 Jadi Arsitekturnya Sebenarnya Begini
 
 ```
 LLM (ChatGPT)
@@ -116,7 +121,7 @@ External API (bisa internal, Firebase, dll)
 ```
 
 
-## 🤔 Kenapa Tidak Langsung Akses API?
+## 7. 🤔 Kenapa MCP? Kenapa Tidak Langsung Akses API?
 
 Kalau LLM bisa akses langsung API, kenapa perlu MCP? Ini alasannya:
 
@@ -125,12 +130,14 @@ Kalau LLM bisa akses langsung API, kenapa perlu MCP? Ini alasannya:
 | 🧠 **Context-awareness** | LLM bisa tahu konteks sistem, dan menjawab dengan lebih natural dan tepat. |
 | 🧩 **Standardisasi** | Semua API bisa dibungkus dengan format JSON schema + handler. Mudah untuk diatur. |
 | 🔒 **Keamanan & Validasi** | Bisa melakukan filtering, validasi, logging semua request sebelum sampai ke API. |
-| 🕹️ **Kontrol** | Bisa ganti source (misal dari Firestore ke Supabase) tanpa ubah cara pakai dari sisi LLM. |
+| 🕹️ **Kontrol** | Bisa mengganti source (misal dari Firestore ke Supabase) tanpa ubah cara pakai dari sisi LLM. |
 | ⚡ **Kombinasi plugin** | LLM bisa query perangkat di Firestore dan kirim ke event API — dalam satu prompt. |
 
 
 
-## Apa bedanya MCP ini dengan agent/tools?
+## 8. 📌 TL;DR - Perbedaan Utama MCP vs Agent vs Tool
+
+Apa bedanya MCP ini dengan agent/tools?
 
 **MCP** vs **Agent** vs **Tools** sering dipakai bersamaan dan bisa tumpang tindih konsepnya, tapi ada perbedaan peran dan level abstraksinya. Yuk kita bedah satu per satu biar clear:
 
@@ -185,7 +192,7 @@ tool: {
 }
 ```
 
-## 🔁 Diagram Hubungan
+### 🔁 Diagram Hubungan
 
 ```
                 +---------------------+
@@ -205,7 +212,7 @@ tool: {
             (fungsi)            (contextual API)
 ```
 
-## 📌 TL;DR - Perbedaan Utama
+###  Perbedaan Utama MCP vs Agent vs Tool
 
 |   | MCP | Agent | Tool |
 |---|---|---|---|
@@ -221,7 +228,7 @@ Kalau Anda sedang membangun sistem assistant dengan kontrol ke API/device, maka:
 - **Agent** bisa kamu tambahkan nanti kalau mau assistant anda bisa berpikir dan chaining task sendiri
 
 
-# ✅ MCP Discovery
+## 9. ✅ MCP Discovery
 
 Sekarang pertanyaannya:
 
@@ -231,7 +238,7 @@ Jawabannya: **dengan konvensi & discovery protocol**.
 
 Mari kita breakdown secara praktis dan teknikal.
 
-## 1. Konvensi Endpoint: /.well-known/mcp.json
+### 1. Konvensi Endpoint: /.well-known/mcp.json
 
 Sama seperti .well-known/ai-plugin.json di OpenAI plugin, MCP bisa pakai endpoint standar untuk registrasi.
 
@@ -267,13 +274,7 @@ File deskriptif berisi:
 }
 ```
 
-## 2. Respons Handshake atau Header
-
-Opsional, tapi berguna untuk auto-discovery. Misalnya:
-- Server bisa balas header `X-MCP-Server: true`
-- Atau /ping endpoint balas `{ mcp: true }`
-
-## 3. Self-description API (/mcp/info)
+### 2. Self-description API (/mcp/info)
 
 Endpoint ini bisa memberi metadata server:
 
@@ -285,7 +286,14 @@ Endpoint ini bisa memberi metadata server:
 }
 ```
 
-## 4. Schema-Based Validation
+### 3. Respons Handshake atau Header (opsional)
+
+Opsional, tapi berguna untuk auto-discovery. Misalnya:
+- Server bisa balas header `X-MCP-Server: true`
+- Atau /ping endpoint balas `{ mcp: true }`
+
+
+### 4. Schema-Based Validation
 
 Client juga bisa kirim **test request dummy** ke salah satu fungsi dan lihat:
 - Apakah server merespons dengan **validasi parameter berbasis schema**
@@ -330,10 +338,25 @@ const isMCPServer = async (url) => {
 };
 ```
 
-## 🧩 Jadi...
+## 10. FAQ Singkat
 
-| Komponen | Tujuan |
+Q: Apakah MCP menggantikan API?
+
+A: Tidak. MCP melengkapi API agar LLM bisa menggunakannya dengan cerdas.
+
+Q: Apa minimal struktur MCP?
+
+A: Plugin registry (.well-known/mcp.json) dan handler endpoint.
+
+
+## 🧩 Jadi.. TL;DR
+
+
+|  | Deskripsi / Tujuan |
 |---|---|
+| **MCP** | Jembatan antara LLM dan API. |
+| **Tools** | Fungsi tunggal. |
+| **Agent** | Entitas yang berencana dan bertindak. |
 | .well-known/mcp.json | Standar discovery MCP plugin & fungsi |
 | /mcp/info | Metadata server |
 | Header (opsional) | Auto-tag saat scanning jaringan/internal |
