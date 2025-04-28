@@ -1,0 +1,7 @@
+[env]
+PORT = "3000"
+
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+

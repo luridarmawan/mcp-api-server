@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "src/index.ts",
+        "use": "@railway/app-runner@0.4.0"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "src/index.ts"
+      }
+    ]
+  }
