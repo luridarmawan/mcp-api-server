@@ -5,6 +5,7 @@ import staticPlugin from '@elysiajs/static';
 import prayerModule from './modules/prayer';
 import registrationModule from './modules/registration';
 import mcp from './modules/mcp';
+import llmModule from './modules/llm';
 import { socketService } from './sockets';
 import * as Constants from './constants';
 
@@ -21,6 +22,7 @@ const app = new Elysia()
         { name: 'Prayer', description: 'Prayer schedule operations' },
         { name: 'Registration', description: 'Event registration operations' },
         { name: 'MCP', description: 'Model Context Protocol' },
+        { name: 'LLM', description: 'Large Language Model' },
       ]
     },
     path: '/docs',
@@ -32,6 +34,7 @@ const app = new Elysia()
   .use(mcp)
   .use(prayerModule)
   .use(registrationModule)
+  .use(llmModule)
   .use(socketService)
   .listen(process.env.API_PORT || Constants.API_PORT)
 
