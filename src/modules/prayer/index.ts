@@ -26,7 +26,7 @@ export default new Elysia({ prefix: '/prayer' })
       }),
       detail: {
         tags: ['Prayer'],
-        summary: "chedule",
+        summary: "schedule",
         description: 'Get prayer schedule for a specific city',
         responses: {
           200: {

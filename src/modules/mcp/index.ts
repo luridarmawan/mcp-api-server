@@ -51,7 +51,7 @@ export default new Elysia({ prefix: '/mcp' })
   }, {
     detail: {
       tags: ["MCP"],
-      summary: "Get prayer schedule"
+      summary: "Get prayer times"
     }
   })
   .post("/prayerSchedule/", async ({ params, body }) => {
@@ -62,7 +62,7 @@ export default new Elysia({ prefix: '/mcp' })
   }, {
     detail: {
       tags: ["MCP"],
-      summary: "Get prayer schedule"
+      summary: "Get prayer times for a specific city."
     }
   })
 

@@ -38,6 +38,7 @@ export default new Elysia({ prefix: '/registration' })
       }),
       detail: {
         tags: ['Registration'],
+        summary: 'registration',
         description: 'Register a new participant for an event',
         responses: {
           201: {
