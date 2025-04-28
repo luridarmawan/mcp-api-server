@@ -1,7 +1,8 @@
 # API & MCP Server Skeleton (ElysiaJS + Bun)
 
-![bun](https://img.shields.io/badge/Bun-v1.0%2B-blue)
+![bun](https://img.shields.io/badge/Bun-v1.2%2B-blue)
 ![elysia](https://img.shields.io/badge/ElysiaJS-Server-orange)
+![mcp](https://img.shields.io/badge/MCP-Supported-green)
 ![websocket](https://img.shields.io/badge/WebSocket-Supported-green)
 ![license](https://img.shields.io/badge/License-Apache%202.0-blueviolet)
 
