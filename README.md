@@ -12,13 +12,14 @@ A lightweight, high-performance API Server using [ElysiaJS](https://elysiajs.com
 
 ## 🚀 Features
 
-- REST API Server with Bun runtime.
-- Model Context Protocol (MCP) base support.
-- MCP Discovery Endpoint / .well-known/mcp.json supported
+- REST API Server powered by Bun runtime.
 - WebSocket Event Handling (realtime communication).
-- Example Events: Prayer Schedule, Event Registration.
+- Model Context Protocol (MCP) base support:
+  - MCP Plugin Registry
+  - MCP Discovery Endpoint (`/.well-known/mcp.json`)
 - Hot reload during development.
-
+- Ready for scalable deployment.
+- Example Events: Prayer Schedule, Event Registration.
 
 
 ## 📋 Requirements
@@ -38,7 +39,7 @@ cd mcp-api-server
 bun install
 ```
 
-Start the development server:
+Run development server:
 
 ```bash
 bun run dev
@@ -53,25 +54,26 @@ MCP is a lightweight communication protocol designed to enable context-aware int
 
 - **Base URL**: http://localhost:3000/mcp
 - **Discovery Endpoint**: http://localhost:3000/mcp/.well-known/mcp.json
-- **Request/Response Format**: JSON
 
 Example basic MCP interaction via WebSocket:
 
 ```json
 {
   "event": "prayer:schedule",
-  "city": "Jakarta"
+  "data": {
+    "city": "Jakarta"
+  }
 }
 ```
 
-[See this to read more information about this MCP server](MCP_and_API.md)
+For full details, see [MCP and API Explanation](MCP_and_API.md).
 
 
 ## 🔌 WebSocket Usage
 
 You can interact with the server via WebSocket:
 
-1. Install wscat (if you haven't):
+1. Install wscat if needed:
 
 ```bash
 npm install -g wscat
@@ -130,14 +132,10 @@ wscat -c ws://localhost:3000
 
 ## 🚀 Deployment
 
-Build for production:
+Build and run for production:
 
 ```bash
 bun run build
-```
-
-Then run the production server:
-```bash
 bun start
 ```
 
