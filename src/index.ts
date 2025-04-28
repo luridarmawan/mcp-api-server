@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia';
 import { swagger } from '@elysiajs/swagger';
 import { cors } from "@elysiajs/cors";
+import staticPlugin from '@elysiajs/static';
 import prayerModule from './modules/prayer';
 import registrationModule from './modules/registration';
 import mcp from './modules/mcp';
@@ -23,6 +24,10 @@ const app = new Elysia()
       ]
     },
     path: '/docs',
+  }))
+  .use(staticPlugin({
+    assets: 'public',
+    prefix: '/',
   }))
   .use(mcp)
   .use(prayerModule)

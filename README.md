@@ -121,7 +121,7 @@ npm install -g wscat
 wscat -c ws://localhost:3000
 
 # Setelah terhubung, kirim event:
->> {"event":"prayer:schedule","city":"Jakarta"}
+>> {"event":"prayer:schedule","data":{"city":"Jakarta"}}
 >> {"event":"registration:new","data":{"name":"Alice","phone":"081122334455","email":"alice@example.com"}}
 ```
 
