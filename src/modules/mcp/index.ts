@@ -92,6 +92,46 @@ export default new Elysia({ prefix: '/mcp' })
     })
   })
 
+
+  // STREAM SUPPORT
+  .get("/stream", ({ set, signal }) => {
+    set.headers["Content-Type"] = "text/event-stream";
+    set.headers["Cache-Control"] = "no-cache";
+    set.headers["Connection"] = "keep-alive";
+
+    return new ReadableStream({
+      start(controller) {
+        console.log("# starting stream");
+
+        const { readable, writable } = new TransformStream();
+        const writer = writable.getWriter();
+        const encoder = new TextEncoder();
+
+
+        const send = (data: any) => {
+          writer.write(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+        };
+
+        // Kirim event awal ke Copilot
+        send({ type: "ready", agent: "mcp-server", status: "connected" });
+
+        // heartbeat setiap 10 detik
+        const interval = setInterval(() => {
+          send({ type: "ping", time: new Date().toISOString() });
+        }, 10000);
+
+
+        // Saat koneksi ditutup
+        signal?.addEventListener("abort", () => {
+          clearInterval(interval);
+          controller.close();
+        });
+
+      }
+    });
+  })
+  // /STREAM SUPPORT
+
   // MCP discovery endpoint
   .get('/.well-known/mcp.json', () => {
     return {

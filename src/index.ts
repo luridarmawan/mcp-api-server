@@ -40,7 +40,10 @@ const app = new Elysia()
   .use(registrationModule)
   .use(llmModule)
   .use(socketService)
-  .listen(process.env.API_PORT || Constants.API_PORT)
+  .listen({
+    port: process.env.API_PORT || Constants.API_PORT,
+    idleTimeout: 0 // 0 = never timeout
+  })
 
 console.log(
   `🦊 ${process.env.API_NAME} API Server is running at ${app.server?.hostname}:${app.server?.port}`
