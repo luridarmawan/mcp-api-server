@@ -1,6 +1,7 @@
 import { Elysia, t } from 'elysia'
 import { http } from '../../utils/http'
 import { getPrayerSchedule } from '../../services/prayerService'
+import * as utils from '../../utils'
 
 export default new Elysia({ prefix: '/mcp' })
   // MCP base check
@@ -12,7 +13,8 @@ export default new Elysia({ prefix: '/mcp' })
     detail: {
       tags: ['MCP'],
       summary: 'MCP Base URL',
-      description: 'MCP Base URL',
+      description: 'MCP Base URL'
+        + `<br>Use the discovery endpoint to retrieve additional MCP information.`,
     }
   })
   
@@ -55,8 +57,6 @@ export default new Elysia({ prefix: '/mcp' })
     }
   })
   .post("/prayerSchedule/", async ({ params, body }) => {
-    console.log(body)
-    // const { city } = body;
     const city = (body.city == undefined) ? "jakarta" : body.city;
     return getPrayerSchedule(city);
   }, {

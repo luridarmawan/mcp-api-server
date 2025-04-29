@@ -1,8 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { proxyToLLMVendor } from './vendor';
 import { ChatCompletionRequest } from './types';
-import { isNotEmpty } from 'elysia/dist/utils';
-
 
 export default new Elysia({ prefix: '/llm' })
 
