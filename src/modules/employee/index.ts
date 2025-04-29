@@ -33,7 +33,6 @@ export default new Elysia({ prefix: '/employee' })
     const employeesAsText = utils.ReadFile('data/occupation.json');
     let employees = JSON.parse(employeesAsText);
     const code = query?.code;
-    console.log('code', code)
     if (code !== undefined){
 
       // SEARCH EMPLOYEE

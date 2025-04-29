@@ -103,9 +103,16 @@ export default new Elysia({ prefix: '/mcp' })
           description: "Mengambil daftar employee beserta kota tempat tinggalnya.",
           type: "http",
           method: "GET",
-          url: "/employee/list",
+          url: "/../employee/list",
           response_mapping: {
             path: "data"
+          },
+          example_request: "GET /employee/list",
+          example_response: {
+            success: true,
+            data: [
+              { "id": 1, "code": "A1023", "fullname": "Andi Pratama", "city": "Jakarta" }
+            ]
           }
         },
         {
@@ -113,7 +120,7 @@ export default new Elysia({ prefix: '/mcp' })
           description: "Mengambil daftar jabatan untuk masing-masing employee berdasarkan kode karyawan.",
           type: "http",
           method: "GET",
-          url: "/employee/occupation/",
+          url: "/../employee/occupation/",
           response_mapping: {
             path: "data"
           }
