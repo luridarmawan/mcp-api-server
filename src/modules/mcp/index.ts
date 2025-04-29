@@ -99,6 +99,26 @@ export default new Elysia({ prefix: '/mcp' })
       version: '1.0.0',
       functions: [
         {
+          name: "fetch_employee_list",
+          description: "Mengambil daftar employee beserta kota tempat tinggalnya.",
+          type: "http",
+          method: "GET",
+          url: "/employee/list",
+          response_mapping: {
+            path: "data"
+          }
+        },
+        {
+          name: "fetch_employee_occupation",
+          description: "Mengambil daftar jabatan untuk masing-masing employee berdasarkan kode karyawan.",
+          type: "http",
+          method: "GET",
+          url: "/employee/occupation/",
+          response_mapping: {
+            path: "data"
+          }
+        },
+        {
           name: 'prayerSchedule',
           description: 'Prayer Schedule',
           parameters: {
