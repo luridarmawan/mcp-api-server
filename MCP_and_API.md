@@ -385,3 +385,15 @@ A: Plugin registry (.well-known/mcp.json) dan handler endpoint.
 | Header (opsional) | Auto-tag saat scanning jaringan/internal |
 | Test call | Validasi runtime |
 
+
+> #### MCP vs RAG (teaser tulisan)
+> Perbedaan antara MCP dan RAG mencerminkan posisi mereka yang berbeda dalam aplikasi praktis. MCP sangat cocok untuk skenario yang membutuhkan LLM untuk melakukan operasi kompleks, seperti saat mengembangkan AI agents. Dalam hal ini, agent mungkin perlu memanggil alat eksternal untuk menyelesaikan tugas, misalnya mengekstrak data dari database atau menggunakan constraint solver untuk memecahkan suatu masalah.
+> Di sisi lain, RAG lebih cocok untuk skenario yang membutuhkan informasi tetap mutakhir dan akurat. Contohnya, ketika chatbot perusahaan perlu menjawab pertanyaan terkait produk atau layanan yang mungkin berada di luar cakupan data pelatihan LLM.
+>
+>**Maksud/Konteks:**
+>
+>> - MCP (kemungkinan merujuk pada Multi-Component Processing atau pendekatan modular) digunakan ketika LLM perlu berinteraksi dengan alat/tools eksternal untuk tugas kompleks (seperti AI agents yang memproses data dinamis).
+>> - RAG (Retrieval-Augmented Generation) fokus pada penyediaan informasi terbaru dengan "mengambil" data dari sumber eksternal (misal dokumen perusahaan), cocok untuk aplikasi seperti chatbot yang butuh jawaban berbasis fakta terkini.
+
+> Perbedaan utama: MCP untuk operasi aktif (eksekusi tugas), RAG untuk akses informasi real-time (pengetahuan mutakhir).
+>
