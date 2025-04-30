@@ -22,8 +22,10 @@
   "devDependencies": {
     "@types/node": "^22.15.0",
     "bun-types": "^1.2.10",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@types/bun": "latest"
   },
   "type": "module",
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "private": true
 }

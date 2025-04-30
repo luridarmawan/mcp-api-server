@@ -4,6 +4,7 @@ import { cors } from "@elysiajs/cors";
 import staticPlugin from '@elysiajs/static';
 import prayerModule from './modules/prayer';
 import registrationModule from './modules/registration';
+import { OCRModule } from './modules/ocr';
 import employeeModule from './modules/employee';
 import mcp from './modules/mcp';
 import llmModule from './modules/llm';
@@ -25,6 +26,7 @@ const app = new Elysia()
         { name: 'Prayer', description: 'Prayer schedule operations' },
         { name: 'Registration', description: 'Event registration operations' },
         { name: 'LLM', description: 'Large Language Model' },
+        { name: 'OCR', description: 'Optical Character Recognition with prediction'},
         { name: 'MCP', description: 'Model Context Protocol' },
       ]
     },
@@ -39,6 +41,7 @@ const app = new Elysia()
   .use(prayerModule)
   .use(registrationModule)
   .use(llmModule)
+  .use(OCRModule)
   .use(socketService)
   .listen({
     port: process.env.API_PORT || Constants.API_PORT,
