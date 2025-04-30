@@ -94,6 +94,7 @@ export default new Elysia({ prefix: '/mcp' })
 
 
   // STREAM SUPPORT
+  /*
   .get("/stream", ({ set, signal }) => {
     set.headers["Content-Type"] = "text/event-stream";
     set.headers["Cache-Control"] = "no-cache";
@@ -130,6 +131,7 @@ export default new Elysia({ prefix: '/mcp' })
       }
     });
   })
+  */
   // /STREAM SUPPORT
 
   // MCP discovery endpoint
