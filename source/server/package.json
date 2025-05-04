@@ -2,8 +2,10 @@
   "name": "apix",
   "version": "1.0.0",
   "scripts": {
-    "dev": "bun run --watch src/index.ts",
-    "start": "bun run src/index.ts",
+    "dev": "bun run --watch src/server.ts",
+    "start": "bun run src/server.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "build-cf": "bun build src/worker.ts --outdir dist",
     "test": "bun run src/index.test.ts",
     "testecho": "echo \"Error: no test specified\" && exit 1",
     "testx": "bun test"

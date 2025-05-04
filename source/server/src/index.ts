@@ -12,7 +12,7 @@ import { socketService } from './sockets';
 import * as Constants from './constants';
 import * as utils from './utils'
 
-const app = new Elysia()
+export const app = new Elysia()
   .use(cors())
   .use(swagger({
     documentation: {
@@ -42,14 +42,5 @@ const app = new Elysia()
   .use(registrationModule)
   .use(llmModule)
   .use(OCRModule)
-  .use(socketService)
-  .listen({
-    port: process.env.API_PORT || Constants.API_PORT,
-    idleTimeout: 0 // 0 = never timeout
-  })
+  .use(socketService);
 
-console.log(
-  `🦊 ${process.env.API_NAME} API Server is running at ${app.server?.hostname}:${app.server?.port}`
-)
-
-export type App = typeof app
