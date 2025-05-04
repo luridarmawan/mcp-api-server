@@ -1,4 +1,4 @@
-# MCP vs Traditional API
+#   
 
 
 <!-- TOC -->
@@ -98,7 +98,8 @@ Contoh arsitektur MCP yang menggunakan beberapa plugin dan internal API.
 
 ## 5. 📦 Plugin MCP
 
-**Deskriptif**: berisi schema (nama fungsi, parameter, deskripsi)
+**Deskriptif**: berisi schema (nama fungsi, parameter, deskripsi).
+
 **Eksekutor**: handler di MCP Server (biasanya HTTP POST) yang menjalankan aksi → manggil API
 
 Schema plugin MCP berbentuk JSON, contoh:
@@ -392,7 +393,7 @@ A: Plugin registry (.well-known/mcp.json) dan handler endpoint.
 >
 >**Maksud/Konteks:**
 >
->> - **MCP** (kemungkinan merujuk pada Multi-Component Processing atau pendekatan modular) digunakan ketika LLM perlu berinteraksi dengan alat/tools eksternal untuk tugas kompleks (seperti AI agents yang memproses data dinamis).
+>> - **MCP** digunakan ketika LLM perlu berinteraksi dengan alat/tools eksternal untuk tugas kompleks (seperti AI agents yang memproses data dinamis).
 >> - **RAG** (Retrieval-Augmented Generation) fokus pada penyediaan informasi terbaru dengan "mengambil" data dari sumber eksternal (misal dokumen perusahaan), cocok untuk aplikasi seperti chatbot yang butuh jawaban berbasis fakta terkini.
 >
 > Perbedaan utama: MCP untuk operasi aktif (eksekusi tugas), RAG untuk akses informasi real-time (pengetahuan mutakhir).
