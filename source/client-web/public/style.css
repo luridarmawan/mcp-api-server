@@ -1,0 +1,133 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#chatbox {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Better spacing between bubbles */
+}
+
+.chat-bubble {
+  margin-bottom: 0; /* Replaced by gap in #chatbox */
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 20px;
+  background: #e0e0e0;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: #007bff;
+  color: white;
+}
+
+.chat-bubble.bot {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* HTML content styling */
+.chat-bubble p {
+  margin: 0.5em 0;
+}
+
+.chat-bubble ul,
+.chat-bubble ol {
+  padding-left: 24px;
+  margin: 0.5em 0;
+}
+
+.chat-bubble li {
+  margin-bottom: 0.3em;
+}
+
+.chat-bubble code {
+  background: rgba(0,0,0,0.08);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.chat-bubble pre {
+  background: rgba(0,0,0,0.08);
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 0.9em;
+  margin: 0.8em 0;
+}
+
+.chat-bubble strong {
+  font-weight: 600;
+}
+
+.chat-bubble em {
+  font-style: italic;
+}
+
+.chat-bubble a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.chat-bubble a:hover {
+  text-decoration: underline;
+}
+
+.chat-bubble blockquote {
+  border-left: 3px solid #ccc;
+  padding-left: 12px;
+  margin: 0.8em 0;
+  color: #555;
+}
+
+#chat-form {
+  display: flex;
+  padding: 15px;
+  background: white;
+  border-top: 1px solid #eee;
+}
+
+#chat-input {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  margin-right: 10px;
+  outline: none;
+}
+
+#chat-input:focus {
+  border-color: #007bff;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #0069d9;
+}

@@ -1,0 +1,151 @@
+<!-- Floating Assistant Button + Retry MCP Call Web UI Integration -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MCP Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f0f0f0;
+    }
+    #chatbox {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 320px;
+      height: 400px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      padding: 16px;
+      z-index: 1001;
+    }
+    .chat-bubble {
+      margin-bottom: 10px;
+      max-width: 80%;
+      padding: 10px;
+      border-radius: 16px;
+    }
+    .user {
+      background: #007bff;
+      color: white;
+      align-self: flex-end;
+    }
+    .bot {
+      background: #eee;
+      color: black;
+      align-self: flex-start;
+    }
+    #chat-form {
+      position: fixed;
+      bottom: 20px;
+      right: 90px;
+      display: flex;
+      gap: 6px;
+      display: none;
+      z-index: 1001;
+    }
+    #chat-input {
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      flex: 1;
+      width: 220px;
+    }
+    #floating-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: #007bff;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1002;
+    }
+    .retry-btn {
+      color: red;
+      font-size: 0.8em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="chatbox"></div>
+  <form id="chat-form">
+    <input type="text" id="chat-input" placeholder="Ask MCP...">
+  </form>
+  <div id="floating-btn">💬</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const chatbox = document.getElementById('chatbox');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const floatingBtn = document.getElementById('floating-btn');
+
+    let lastUserMsg = '';
+
+    function addMessage(msg, sender, retry = false) {
+      const div = document.createElement('div');
+      div.className = `chat-bubble ${sender}`;
+      div.innerHTML = DOMPurify.sanitize(msg);
+
+      if (retry) {
+        const retryBtn = document.createElement('span');
+        retryBtn.className = 'retry-btn';
+        retryBtn.textContent = ' 🔁 Retry';
+        retryBtn.onclick = () => {
+          sendMessage(lastUserMsg);
+        };
+        div.appendChild(retryBtn);
+      }
+
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function sendMessage(message) {
+      lastUserMsg = message;
+      addMessage(message, 'user');
+      socket.emit('userMessage', message);
+    }
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      sendMessage(msg);
+      chatInput.value = '';
+    });
+
+    socket.on('botMessage', (msg) => {
+      if (!msg || msg.includes('[ERROR]')) {
+        addMessage('Error while calling MCP.', 'bot', true);
+      } else {
+        addMessage(msg, 'bot');
+      }
+    });
+
+    floatingBtn.addEventListener('click', () => {
+      const isVisible = chatbox.style.display === 'flex';
+      chatbox.style.display = isVisible ? 'none' : 'flex';
+      chatForm.style.display = isVisible ? 'none' : 'flex';
+    });
+  </script>
+</body>
+</html>
