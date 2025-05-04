@@ -4,8 +4,19 @@ import { http } from '../../utils/http'
 export default new Elysia({ prefix: '/registration' })
   .post('/',
     async ({ body }) => {
+
+
+      // Example: POST to another webhook
+      let url = process.env.REGISTRATION_WEBHOOK;
+      if (url == undefined){
+        return {
+          success: false,
+          message: 'Registration webhook not found'
+        }
+      }
       try {
-        const response = await http.post('https://6806508f001fae34ed13.arinni.id/general/registration/', body)
+        body.event = 'registration'
+        const response = await http.post(url, body)
         return {
           success: true,
           data: response.data
@@ -16,6 +27,8 @@ export default new Elysia({ prefix: '/registration' })
           message: 'Registration failed'
         }
       }
+
+
     },
     {
       body: t.Object({
@@ -25,6 +38,7 @@ export default new Elysia({ prefix: '/registration' })
       }),
       detail: {
         tags: ['Registration'],
+        summary: 'registration',
         description: 'Register a new participant for an event',
         responses: {
           201: {

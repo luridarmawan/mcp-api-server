@@ -22,11 +22,11 @@ export default new Elysia({ prefix: '/prayer' })
     },
     {
       query: t.Object({
-        city: t.String({ description: 'City name to get prayer schedule' })
+        city: t.Optional(t.String({ description: 'City name to get prayer schedule' })),
       }),
       detail: {
         tags: ['Prayer'],
-        summary: "chedule",
+        summary: "schedule",
         description: 'Get prayer schedule for a specific city',
         responses: {
           200: {

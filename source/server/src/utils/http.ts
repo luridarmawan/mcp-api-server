@@ -16,3 +16,7 @@ http.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+// Menambahkan header default
+// http.defaults.headers.common['Authorization'] = 'Bearer your-token-here'
+// http.defaults.headers.common['X-Custom-Header'] = 'custom-value'

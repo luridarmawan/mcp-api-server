@@ -2,24 +2,32 @@
   "name": "apix",
   "version": "1.0.0",
   "scripts": {
-    "dev": "bun run --watch src/index.ts",
-    "start": "bun run src/index.ts",
+    "dev": "bun run --watch src/server.ts",
+    "start": "bun run src/server.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "build-cf": "bun build src/worker.ts --outdir dist",
     "test": "bun run src/index.test.ts",
     "testecho": "echo \"Error: no test specified\" && exit 1",
     "testx": "bun test"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/static": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
     "axios": "^1.9.0",
+    "chalk": "^5.4.1",
     "elysia": "latest",
-    "socket.io": "^4.8.1"
+    "he": "^1.2.0",
+    "socket.io": "^4.8.1",
+    "stream": "^0.0.3"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
     "bun-types": "^1.2.10",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@types/bun": "latest"
   },
   "type": "module",
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "private": true
 }

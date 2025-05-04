@@ -1,11 +1,31 @@
 # API & MCP Server Skeleton (ElysiaJS + Bun)
 
-![bun](https://img.shields.io/badge/Bun-v1.0%2B-blue)
+![bun](https://img.shields.io/badge/Bun-v1.2%2B-blue)
 ![elysia](https://img.shields.io/badge/ElysiaJS-Server-orange)
+![mcp](https://img.shields.io/badge/MCP-Supported-green)
 ![websocket](https://img.shields.io/badge/WebSocket-Supported-green)
 ![license](https://img.shields.io/badge/License-Apache%202.0-blueviolet)
 
 __(Documentation is not yet complete.)__
+
+<!-- TOC -->
+<details>
+<summary>📑 Daftar Isi</summary>
+
+- [API & MCP Server Skeleton (ElysiaJS + Bun)](#api--mcp-server-skeleton-elysiajs--bun)
+  - [🚀 Features](#-features)
+  - [📌 Requirements](#-requirements)
+  - [🛠️ Getting Started](#-getting-started)
+  - [🧠 Model Context Protocol (MCP)](#-model-context-protocol-mcp)
+  - [🔌 WebSocket Usage](#-websocket-usage)
+  - [📁 Project Structure](#-project-structure)
+  - [🚀 Deployment](#-deployment)
+  - [🔖 License](#-license)
+  - [📘 References](#-references)
+- [MCP vs Traditional API](MCP_and_API.md)
+</details>
+
+---
 
 A lightweight, high-performance API Server using [ElysiaJS](https://elysiajs.com/) with [Bun](https://bun.sh/) runtime, integrated with Model Context Protocol (MCP) and WebSocket support.
 
@@ -101,7 +121,7 @@ npm install -g wscat
 wscat -c ws://localhost:3000
 
 # Setelah terhubung, kirim event:
->> {"event":"prayer:schedule","city":"Jakarta"}
+>> {"event":"prayer:schedule","data":{"city":"Jakarta"}}
 >> {"event":"registration:new","data":{"name":"Alice","phone":"081122334455","email":"alice@example.com"}}
 ```
 
