@@ -41,6 +41,7 @@ export const app = new Elysia()
   .use(prayerModule)
   .use(registrationModule)
   .use(llmModule)
-  .use(OCRModule)
-  .use(socketService);
+  .use(OCRModule);
+
+app.use(socketService);
 
