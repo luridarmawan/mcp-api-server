@@ -33,7 +33,7 @@ async def main():
         print("Math response:", math_response["messages"][-1].content)
 
         weather_response = await agent.ainvoke(
-            {"messages": [{"role": "user", "content": "bagaimana cuaca di jakarta?"}]}
+            {"messages": [{"role": "user", "content": "bagaimana cuaca di semarang?"}]}
         )
         # print("Weather response:", weather_response)
         print("Weather response:", weather_response["messages"][-1].content)
