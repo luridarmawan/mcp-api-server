@@ -16,9 +16,22 @@ func main() {
 	config.LoadConfig()
 	fmt.Printf("Starting %s on port %s...\n", config.Cfg.AppName, config.Cfg.AppPort)
 
-	// app := config.NewFiberApp()
-	app := fiber.New()
+	// Create Fiber app with increased header limit
+	app := fiber.New(fiber.Config{
+		ServerHeader: config.Cfg.AppName,
+		// ReadBufferSize:        8192,  // Increase read buffer size
+		ReadBufferSize:        16 * 1024, // 16KB (default: 4096)
+		WriteBufferSize:       16 * 1024, // 16KB (default: 4096)
+		DisableStartupMessage: false,     // Keep or set to true to disable startup message
+	})
+
 	routes.SetupRoutes(app)
+
+	// debug header
+	// app.Use(func(c *fiber.Ctx) error {
+	// 	fmt.Println("Headers received:", c.GetReqHeaders())
+	// 	return c.Next()
+	// })
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")

@@ -7,7 +7,7 @@ run:
 	go run ./cmd/server
 
 docs:
-	swag init --dir ./cmd/server --output ./internal/docs
+	swag init --dir ./cmd/server --output ./internal/docs --outputTypes json,yaml
 
 swagger:
 	swag init --dir ./cmd/server --output ./internal/docs
