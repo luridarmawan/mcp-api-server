@@ -31,7 +31,37 @@ func LoadConfig() {
 }
 
 func getEnv(key string, fallback string) string {
-	if value, exists := os.LookupEnv(key); exists {
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "dev"
+	}
+
+	// Key yang dikecualikan dari suffix environment
+	excludedKeys := map[string]bool{
+		"APP_NAME": true,
+		"APP_PORT": true,
+		"DEBUG":    true,
+	}
+
+	var envKey string
+	if excludedKeys[key] {
+		envKey = key
+	} else {
+		var suffix string
+		switch env {
+		case "dev":
+			suffix = "_DEV"
+		case "staging":
+			suffix = "_STG"
+		case "prod", "production":
+			suffix = "_PROD"
+		default:
+			suffix = "_DEV"
+		}
+		envKey = key + suffix
+	}
+
+	if value, exists := os.LookupEnv(envKey); exists {
 		return value
 	}
 	return fallback

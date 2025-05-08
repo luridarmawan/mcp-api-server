@@ -4,6 +4,9 @@
 # make build     # untuk build binary ke bin/mcp-server
 # make tidy      # untuk membersihkan dan sinkronkan dependensi
 
+dev:
+	gow run cmd/server/main.go
+
 run:
 	go run ./cmd/server
 

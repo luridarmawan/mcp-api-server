@@ -10,6 +10,8 @@ import (
 func SetupRoutes(app *fiber.App) {
 	// app.Get("/swagger/*", swagger.HandlerDefault)
 
-	api := app.Group("/api")
+	api := app.Group("/")
+	EmployeeRoutes(api)
+
 	api.Post("/mcp", handlers.HandleMCP)
 }
