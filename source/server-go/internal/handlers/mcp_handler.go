@@ -1,18 +1,22 @@
 package handlers
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"apiserver/internal/services"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // HandleMCP godoc
 // @Summary Execute MCP request
+// @Description Handle MCP request processing
 // @Tags MCP
 // @Accept json
 // @Produce json
 // @Param request body map[string]interface{} true "MCP Request"
-// @Success 200 {object} map[string]interface{}
-// @Router /api/mcp [post]
+// @Success 200 {object} map[string]interface{} "Success response"
+// @Failure 400 {object} map[string]interface{} "Bad request"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /mcp [post]
 func HandleMCP(c *fiber.Ctx) error {
 	var req map[string]interface{}
 	if err := c.BodyParser(&req); err != nil {

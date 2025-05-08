@@ -11,9 +11,18 @@ run:
 	go run ./cmd/server
 
 docs:
-	swag init --dir ./cmd/server --output ./internal/docs --outputTypes json,yaml
+	rm -rf internal/docs/swagger.*
+	swag init --dir . \
+	  --generalInfo cmd/server/main.go \
+	  --output ./internal/docs \
+	  --outputTypes json,yaml \
+	  --parseDependency false \
+	  --parseInternal false \
+	  --parseVendor false \
+	  --exclude ./data,./bin,sync/atomic
 
 build:
+	make docs
 	go mod tidy
 	go build -o bin/api-server ./cmd/server
 

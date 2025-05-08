@@ -12,8 +12,10 @@ import (
 // GetEmployeeList godoc
 // @Summary Get employee list
 // @Tags Employee
-// @Description Get employee list.
-// @Success 200 {object} map[string]interface{}
+// @Description Retrieve a paginated list of all employees
+// @Produce json
+// @Success 200 {object} object{success=bool,code=int,data=[]object} "Success response"
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /employee/list [get]
 func GetEmployeeList(c *fiber.Ctx) error {
 	// Read the file
@@ -36,12 +38,15 @@ func GetEmployeeList(c *fiber.Ctx) error {
 }
 
 // GetEmployeeOccupation godoc
-// @Summary Get all employee occupations
+// @Summary Get employee occupations
 // @Tags Employee
-// @Description Retrieve the list of all employee occupations.
-// @Param code query string false "Employee code"
-// @Success 200 {object} map[string]interface{}
-// @Router /employee/occupation/ [get]
+// @Description Retrieve available occupations, optionally filtered by employee code
+// @Produce json
+// @Param code query string false "Filter by employee code"
+// @Success 200 {object} dto.BaseResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /employee/occupation [get]
 func GetEmployeeOccupation(c *fiber.Ctx) error {
 	code := c.Query("code", "")
 
@@ -63,7 +68,7 @@ func GetEmployeeOccupation(c *fiber.Ctx) error {
 			if strings.EqualFold(emp.EmployeeCode, code) {
 				return c.Status(200).JSON(fiber.Map{
 					"success": true,
-					"code":    code,
+					"code":    0,
 					"data":    []models.Occupation{emp},
 				})
 			}
@@ -75,7 +80,7 @@ func GetEmployeeOccupation(c *fiber.Ctx) error {
 	// No code: return full list
 	return c.Status(200).JSON(fiber.Map{
 		"success": true,
-		"code":    code,
+		"code":    0,
 		"data":    occupations,
 	})
 }

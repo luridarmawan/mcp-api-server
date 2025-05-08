@@ -1,4 +1,20 @@
-basePath: /api
+basePath: /
+definitions:
+  dto.BaseResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      success:
+        type: boolean
+    type: object
+  dto.ErrorResponse:
+    properties:
+      message:
+        type: integer
+      success:
+        type: boolean
+    type: object
 host: localhost:8081
 info:
   contact:
@@ -7,5 +23,100 @@ info:
   description: API Documentation.
   title: My API
   version: 1.0.0
-paths: {}
+paths:
+  /employee/list:
+    get:
+      description: Retrieve a paginated list of all employees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                items:
+                  type: object
+                type: array
+              success:
+                type: boolean
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get employee list
+      tags:
+      - Employee
+  /employee/occupation:
+    get:
+      description: Retrieve available occupations, optionally filtered by employee
+        code
+      parameters:
+      - description: Filter by employee code
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get employee occupations
+      tags:
+      - Employee
+  /mcp:
+    post:
+      consumes:
+      - application/json
+      description: Handle MCP request processing
+      parameters:
+      - description: MCP Request
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Execute MCP request
+      tags:
+      - MCP
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

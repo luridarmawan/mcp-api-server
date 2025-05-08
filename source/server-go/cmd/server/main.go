@@ -4,7 +4,11 @@
 // @contact.name    CARIK Team
 // @contact.email   halo@carik.id
 // @host            localhost:8081
-// @BasePath        /api
+// @BasePath        /
+// @schemes         http https
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 // package main
 package main
 
@@ -16,7 +20,8 @@ import (
 	"log"
 	"os"
 
-	_ "apiserver/internal/docs" // this will generate docs automatically
+	_ "apiserver/internal/docs"     // this will generate docs automatically
+	_ "apiserver/internal/handlers" // import all handlers for swagger
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -55,7 +60,7 @@ func main() {
 
 	// Document UI route
 	app.Get("/docs", func(c *fiber.Ctx) error {
-		data, _ := os.ReadFile("./internal/docs/redoc.html")
+		data, _ := os.ReadFile("./internal/docs/rapidoc.html")
 		html := string(data)
 		c.Set("Content-Type", "text/html")
 		return c.SendString(html)
