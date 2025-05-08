@@ -1,0 +1,53 @@
+[
+    {
+      "id": 1,
+      "employee_code": "A1023",
+      "title": "Manager Operasional"
+    },
+    {
+      "id": 2,
+      "employee_code": "B1456",
+      "title": "Staff Administrasi"
+    },
+    {
+      "id": 3,
+      "employee_code": "C1789",
+      "title": "Supervisor Produksi"
+    },
+    {
+      "id": 4,
+      "employee_code": "D1204",
+      "title": "Analis Data"
+    },
+    {
+      "id": 5,
+      "employee_code": "E1678",
+      "title": "Sales Executive"
+    },
+    {
+      "id": 6,
+      "employee_code": "F1345",
+      "title": "Customer Service"
+    },
+    {
+      "id": 7,
+      "employee_code": "G1980",
+      "title": "Teknisi Lapangan"
+    },
+    {
+      "id": 8,
+      "employee_code": "H1032",
+      "title": "Finance Officer"
+    },
+    {
+      "id": 9,
+      "employee_code": "I1654",
+      "title": "HR Specialist"
+    },
+    {
+      "id": 10,
+      "employee_code": "J1567",
+      "title": "Marketing Coordinator"
+    }
+  ]
+  
