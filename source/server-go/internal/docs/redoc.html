@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Docs</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Custom CSS (opsional) -->
+    <style>
+        body { margin: 0; padding: 0; }
+        /* Contoh custom CSS */
+        .menu-content { max-height: 80vh !important; }
+    </style>
+</head>
+<body>
+    <redoc 
+        spec-url="/docs/openapi.json"
+        disable-search="false"
+        hide-loading="true"
+        scroll-y-offset="60"
+        theme='{
+            "colors": {
+                "primary": { "main": "#6c5ce7" },
+                "success": { "main": "#00b894" },
+                "text": { "primary": "#2d3436" }
+            },
+            "typography": { 
+                "fontFamily": "Roboto, sans-serif",
+                "headings": { "fontWeight": "700" }
+            },
+            "sidebar": { "width": "300px" }
+        }'
+        nativeScrollbars=false
+    ></redoc>
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('API Document loaded!');
+        });
+    </script>
+</body>
+</html>
