@@ -1,0 +1,23 @@
+root = "./cmd/server"
+tmp_dir = "../../tmp"
+
+[build]
+  cmd = "go build -o ../../tmp/main ."
+  bin = "../../tmp/main"
+  delay = 1000
+  exclude_dir = ["tmp", "vendor", ".git", "docs"]
+  include_ext = ["go", "html", "tpl", "tmpl", "json"]
+  kill_delay = "500ms"
+  log = "build-errors.log"
+  send_interrupt = true
+  stop_on_error = true
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  time = false
