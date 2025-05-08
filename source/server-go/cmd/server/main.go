@@ -11,6 +11,7 @@ package main
 import (
 	"apiserver/internal/config"
 	"apiserver/internal/routes"
+	"apiserver/internal/utils"
 	"fmt"
 	"log"
 	"os"
@@ -40,13 +41,13 @@ func main() {
 	// })
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
+		return utils.Output(c, "OK")
 	})
 
 	app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
 		data, err := os.ReadFile("./internal/docs/swagger.json")
 		if err != nil {
-			return c.Status(500).SendString("Failed to load OpenAPI spec")
+			return utils.Output(c, "Failed to load OpenAPI spec", false, 500)
 		}
 		c.Set("Content-Type", "application/json")
 		return c.Send(data)
