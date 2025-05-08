@@ -1,19 +1,24 @@
 package dto
 
+// BaseResponse godoc
+// @Schema
 type BaseResponse struct {
-	Success bool        `json:"success"`
-	Code    int         `json:"code"`
-	Data    interface{} `json:"data"`
+	// @Example true
+	Success bool `json:"success"`
+	// @Example 99
+	Code int         `json:"code"`
+	Data interface{} `json:"data"`
 }
 
+// ErrorResponse godoc
+// @Schema
 type ErrorResponse struct {
+	// @Example false
 	Success bool `json:"success"`
-	Message int  `json:"message"`
+	// @Example "Invalid request"
+	Message string `json:"message"`
 }
 
 type OccupationResponse struct {
-	// Definisikan struktur data occupations di sini
-	// Contoh:
 	Occupation string `json:"occupation"`
-	// atau sesuaikan dengan struktur aktual Anda
 }

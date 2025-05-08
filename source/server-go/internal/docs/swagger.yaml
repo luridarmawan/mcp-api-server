@@ -3,16 +3,20 @@ definitions:
   dto.BaseResponse:
     properties:
       code:
+        description: '@Example 99'
         type: integer
       data: {}
       success:
+        description: '@Example true'
         type: boolean
     type: object
   dto.ErrorResponse:
     properties:
       message:
-        type: integer
+        description: '@Example "Invalid request"'
+        type: string
       success:
+        description: '@Example false'
         type: boolean
     type: object
 host: localhost:8081
@@ -31,7 +35,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Success response
+          description: Success response" Example({"success":true,"code":0,"data":[{...}]})
           schema:
             properties:
               code:

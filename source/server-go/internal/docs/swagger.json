@@ -28,7 +28,7 @@
                 "summary": "Get employee list",
                 "responses": {
                     "200": {
-                        "description": "Success response",
+                        "description": "Success response\" Example({\"success\":true,\"code\":0,\"data\":[{...}]})",
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -152,10 +152,12 @@
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "@Example 99",
                     "type": "integer"
                 },
                 "data": {},
                 "success": {
+                    "description": "@Example true",
                     "type": "boolean"
                 }
             }
@@ -164,9 +166,11 @@
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "integer"
+                    "description": "@Example \"Invalid request\"",
+                    "type": "string"
                 },
                 "success": {
+                    "description": "@Example false",
                     "type": "boolean"
                 }
             }
