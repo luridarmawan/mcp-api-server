@@ -1,3 +1,11 @@
+// @title           My API
+// @version         1.0.0
+// @description     API Documentation.
+// @contact.name    CARIK Team
+// @contact.email   halo@carik.id
+// @host            localhost:8081
+// @BasePath        /api
+// package main
 package main
 
 import (
@@ -5,11 +13,11 @@ import (
 	"apiserver/internal/routes"
 	"fmt"
 	"log"
+	"os"
 
 	_ "apiserver/internal/docs" // this will generate docs automatically
 
 	"github.com/gofiber/fiber/v2"
-	swagger "github.com/swaggo/fiber-swagger"
 )
 
 func main() {
@@ -25,8 +33,6 @@ func main() {
 		DisableStartupMessage: false,     // Keep or set to true to disable startup message
 	})
 
-	routes.SetupRoutes(app)
-
 	// debug header
 	// app.Use(func(c *fiber.Ctx) error {
 	// 	fmt.Println("Headers received:", c.GetReqHeaders())
@@ -37,9 +43,26 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 
-	// Swagger UI route
-	app.Get("/docs/*", swagger.WrapHandler) // Access Swagger UI at /docs
+	app.Get("/docs/openapi.json", func(c *fiber.Ctx) error {
+		data, err := os.ReadFile("./internal/docs/swagger.json")
+		if err != nil {
+			return c.Status(500).SendString("Failed to load OpenAPI spec")
+		}
+		c.Set("Content-Type", "application/json")
+		return c.Send(data)
+	})
 
+	// Document UI route
+	app.Get("/docs", func(c *fiber.Ctx) error {
+		data, _ := os.ReadFile("./internal/docs/redoc.html")
+		html := string(data)
+		c.Set("Content-Type", "text/html")
+		return c.SendString(html)
+	})
+
+	routes.SetupRoutes(app)
+
+	// Start Server
 	port := config.Cfg.AppPort
 	err := app.Listen(":" + port)
 	if err != nil {

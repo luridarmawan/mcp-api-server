@@ -1,14 +1,14 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/swagger"
+	_ "apiserver/internal/docs" // OpenAPI docs
 	"apiserver/internal/handlers"
-	_ "apiserver/internal/docs" // Swagger docs
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func SetupRoutes(app *fiber.App) {
-	app.Get("/swagger/*", swagger.HandlerDefault)
+	// app.Get("/swagger/*", swagger.HandlerDefault)
 
 	api := app.Group("/api")
 	api.Post("/mcp", handlers.HandleMCP)

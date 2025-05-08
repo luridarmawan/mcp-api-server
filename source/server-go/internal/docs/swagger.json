@@ -1,7 +1,15 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "API Documentation.",
+        "title": "My API",
+        "contact": {
+            "name": "CARIK Team",
+            "email": "halo@carik.id"
+        },
+        "version": "1.0.0"
     },
+    "host": "localhost:8081",
+    "basePath": "/api",
     "paths": {}
 }

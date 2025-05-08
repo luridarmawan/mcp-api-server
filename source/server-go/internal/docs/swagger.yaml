@@ -1,4 +1,11 @@
+basePath: /api
+host: localhost:8081
 info:
-  contact: {}
+  contact:
+    email: halo@carik.id
+    name: CARIK Team
+  description: API Documentation.
+  title: My API
+  version: 1.0.0
 paths: {}
 swagger: "2.0"
