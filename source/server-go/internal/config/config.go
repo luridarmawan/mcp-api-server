@@ -3,14 +3,16 @@ package config
 import (
 	// "log"
 	"os"
-	"github.com/joho/godotenv"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	AppName  string
-	AppPort  string
-	Debug    bool
+	AppName   string
+	AppPort   string
+	Debug     bool
+	JWTSecret string
 }
 
 var Cfg Config
@@ -24,9 +26,10 @@ func LoadConfig() {
 	}
 
 	Cfg = Config{
-		AppName:  getEnv("APP_NAME", "MCP Server"),
-		AppPort:  getEnv("APP_PORT", "8080"),
-		Debug:    getEnv("DEBUG", "false") == "true",
+		AppName:   getEnv("APP_NAME", "MCP Server"),
+		AppPort:   getEnv("APP_PORT", "8080"),
+		Debug:     getEnv("DEBUG", "false") == "true",
+		JWTSecret: getEnv("JWT_SECRET", "your-secret-key"), // Default secret key, sebaiknya diganti di production
 	}
 }
 

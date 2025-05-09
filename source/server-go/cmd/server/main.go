@@ -9,12 +9,14 @@ package main
 // @host            localhost:8081
 // @BasePath        /
 // @schemes         http https
-// @securityDefinitions.apikey ApiKeyAuth
+// @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 
 import (
 	"apiserver/internal/config"
+	"apiserver/internal/middleware"
 	"apiserver/internal/routes"
 	"apiserver/internal/utils"
 	"fmt"
@@ -73,6 +75,8 @@ func main() {
 		return c.SendString(html)
 	})
 
+	// Gunakan middleware autentikasi secara global
+	app.Use(middleware.AuthMiddleware())
 	routes.SetupRoutes(app)
 
 	// Start Server
