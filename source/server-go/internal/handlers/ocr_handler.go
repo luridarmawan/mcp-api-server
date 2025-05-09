@@ -16,6 +16,8 @@ package handlers
 
 import (
 	"apiserver/dto"
+	"apiserver/internal/config"
+	"apiserver/internal/services"
 	"apiserver/internal/utils"
 	"fmt"
 
@@ -38,15 +40,28 @@ import (
 // @Router /ocr/predict_url/{model_id} [post]
 func OcrPredictFromURL(c *fiber.Ctx) error {
 	modelId := c.Params("model_id")
+	platform := c.Query("platform")
 	//async := c.QueryBool("async", false) // prepare untuk async method
+
+	if platform == "" {
+		platform = config.Cfg.OcrPlatform
+	}
+	fmt.Println("plat: " + platform)
 
 	var payload dto.OcrRequest
 	if err := c.BodyParser(&payload); err != nil {
 		return utils.Output(c, "Invalid request body", false)
 	}
 
-	//TODO: Logika pemrosesan OCR
-	fmt.Println(string(payload.Urls[0]))
+	// Panggil layanan OCR vendor melalui proxy
+	result, err := services.ProxyOCRURLVendor(modelId, payload.Urls, platform)
+	if err != nil {
+		return utils.Output(c, "OCR Failed: "+err.Error(), false)
+	}
+
+	if result == nil {
+		return utils.Output(c, "Tidak ada hasil OCR yang ditemukan", false)
+	}
 
 	return c.Status(200).JSON(fiber.Map{
 		"success": true,
