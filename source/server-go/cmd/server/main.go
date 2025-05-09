@@ -1,3 +1,6 @@
+// package main
+package main
+
 // @title           My API
 // @version         1.0.0
 // @description     API Documentation.
@@ -9,8 +12,6 @@
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-// package main
-package main
 
 import (
 	"apiserver/internal/config"
@@ -28,7 +29,7 @@ import (
 
 func main() {
 	config.LoadConfig()
-	fmt.Printf("Starting %s on port %s...\n", config.Cfg.AppName, config.Cfg.AppPort)
+	fmt.Printf("%s running on port %s...\n", config.Cfg.AppName, config.Cfg.AppPort)
 
 	// Create Fiber app with increased header limit
 	app := fiber.New(fiber.Config{
@@ -44,6 +45,12 @@ func main() {
 	// 	fmt.Println("Headers received:", c.GetReqHeaders())
 	// 	return c.Next()
 	// })
+
+	// Static Handler
+	app.Static("/static", "./static")
+	app.Get("/favicon.ico", func(c *fiber.Ctx) error {
+		return c.SendFile("./static/favicon.ico")
+	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return utils.Output(c, "OK")

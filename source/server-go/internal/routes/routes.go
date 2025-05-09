@@ -12,6 +12,7 @@ func SetupRoutes(app *fiber.App) {
 
 	api := app.Group("/")
 	EmployeeRoutes(api)
+	OCRRoutes(api)
 
 	api.Post("/mcp", handlers.HandleMCP)
 }

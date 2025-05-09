@@ -19,6 +19,17 @@ definitions:
         description: '@Example false'
         type: boolean
     type: object
+  dto.OcrRequest:
+    properties:
+      urls:
+        description: '@Example ["https://example.com/image1.jpg"]'
+        items:
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - urls
+    type: object
 host: localhost:8081
 info:
   contact:
@@ -115,6 +126,117 @@ paths:
       summary: Execute MCP request
       tags:
       - MCP
+  /ocr/predict_file/{model_id}:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Perform OCR prediction from uploaded image file
+      parameters:
+      - description: Model ID
+        example: ktp-123
+        in: path
+        name: model_id
+        required: true
+        type: string
+      - description: Image File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response" Example({"success":true,"modelId":"model-123","filename":"image.jpg","result":{"predictions":[{"label":"text","confidence":0.95}]}})
+          schema:
+            properties:
+              filename:
+                type: string
+              model_id:
+                type: string
+              result:
+                type: object
+              success:
+                type: boolean
+            type: object
+        "400":
+          description: Bad Request" Example({"success":false,"error":"File not found"})
+          schema:
+            properties:
+              error:
+                type: string
+              success:
+                type: boolean
+            type: object
+        "500":
+          description: Internal Server Error" Example({"success":false,"error":"OCR
+            processing failed"})
+          schema:
+            properties:
+              error:
+                type: string
+              success:
+                type: boolean
+            type: object
+      summary: Prediction for Image File
+      tags:
+      - OCR
+  /ocr/predict_url/{model_id}:
+    post:
+      consumes:
+      - application/json
+      description: Perform OCR prediction from provided image URLs
+      parameters:
+      - description: Model ID
+        example: ktp-123
+        in: path
+        name: model_id
+        required: true
+        type: string
+      - description: Image URLs
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OcrRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response" Example({"success":true,"modelId":"model-123","async":false,"received":["url1"],"result":{"predictions":[{"label":"text","confidence":0.95}]}})
+          schema:
+            properties:
+              async:
+                type: boolean
+              model_id:
+                type: string
+              received:
+                items:
+                  type: string
+                type: array
+              result:
+                type: object
+              success:
+                type: boolean
+            type: object
+        "400":
+          description: Bad Request" Example({"success":false,"error":"Invalid request
+            body"})
+          schema:
+            properties:
+              error:
+                type: string
+              success:
+                type: boolean
+            type: object
+        "500":
+          description: Internal Server Error" Example({"success":false,"code":500,"message":"OCR
+            processing failed"})
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Prediction for Image URL
+      tags:
+      - OCR
 schemes:
 - http
 - https

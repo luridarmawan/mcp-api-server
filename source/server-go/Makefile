@@ -5,15 +5,13 @@
 # make tidy      # untuk membersihkan dan sinkronkan dependensi
 
 dev:
+	make docs
 	gow run cmd/server/main.go
-
-run:
-	go run ./cmd/server
 
 docs:
 	rm -rf internal/docs/swagger.*
 	swag init --dir . \
-	  --generalInfo cmd/server/main.go \
+	  --generalInfo ./cmd/server/main.go \
 	  --output ./internal/docs \
 	  --outputTypes json,yaml \
 	  --parseDependency false \

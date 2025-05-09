@@ -145,6 +145,170 @@
                     }
                 }
             }
+        },
+        "/ocr/predict_file/{model_id}": {
+            "post": {
+                "description": "Perform OCR prediction from uploaded image file",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OCR"
+                ],
+                "summary": "Prediction for Image File",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "ktp-123",
+                        "description": "Model ID",
+                        "name": "model_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image File",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response\" Example({\"success\":true,\"modelId\":\"model-123\",\"filename\":\"image.jpg\",\"result\":{\"predictions\":[{\"label\":\"text\",\"confidence\":0.95}]}})",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "filename": {
+                                    "type": "string"
+                                },
+                                "model_id": {
+                                    "type": "string"
+                                },
+                                "result": {
+                                    "type": "object"
+                                },
+                                "success": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request\" Example({\"success\":false,\"error\":\"File not found\"})",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                },
+                                "success": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error\" Example({\"success\":false,\"error\":\"OCR processing failed\"})",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                },
+                                "success": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ocr/predict_url/{model_id}": {
+            "post": {
+                "description": "Perform OCR prediction from provided image URLs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "OCR"
+                ],
+                "summary": "Prediction for Image URL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "ktp-123",
+                        "description": "Model ID",
+                        "name": "model_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Image URLs",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OcrRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response\" Example({\"success\":true,\"modelId\":\"model-123\",\"async\":false,\"received\":[\"url1\"],\"result\":{\"predictions\":[{\"label\":\"text\",\"confidence\":0.95}]}})",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "async": {
+                                    "type": "boolean"
+                                },
+                                "model_id": {
+                                    "type": "string"
+                                },
+                                "received": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "result": {
+                                    "type": "object"
+                                },
+                                "success": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request\" Example({\"success\":false,\"error\":\"Invalid request body\"})",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                },
+                                "success": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error\" Example({\"success\":false,\"code\":500,\"message\":\"OCR processing failed\"})",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -172,6 +336,22 @@
                 "success": {
                     "description": "@Example false",
                     "type": "boolean"
+                }
+            }
+        },
+        "dto.OcrRequest": {
+            "type": "object",
+            "required": [
+                "urls"
+            ],
+            "properties": {
+                "urls": {
+                    "description": "@Example [\"https://example.com/image1.jpg\"]",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }
