@@ -91,8 +91,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-      security:
-      - BearerAuth: []
       summary: Get employee occupations
       tags:
       - Employee
@@ -241,65 +239,12 @@ paths:
       summary: Prediction for Image URL
       tags:
       - OCR
-  /profile:
-    get:
-      consumes:
-      - application/json
-      description: Get authenticated user profile
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Get user profile
-      tags:
-      - profile
-    put:
-      consumes:
-      - application/json
-      description: Update authenticated user profile
-      parameters:
-      - description: Profile Update Request
-        in: body
-        name: request
-        required: true
-        schema:
-          additionalProperties: true
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Update user profile
-      tags:
-      - profile
 schemes:
 - http
 - https
 securityDefinitions:
   BearerAuth:
-    description: Type "Bearer" followed by a space and JWT token.
+    description: 'Format: Bearer {token}'
     in: header
     name: Authorization
     type: apiKey

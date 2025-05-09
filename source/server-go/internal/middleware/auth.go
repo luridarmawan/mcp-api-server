@@ -16,15 +16,19 @@ func AuthMiddleware() fiber.Handler {
 			return c.Next()
 		}
 
-		// Ambil token dari header Authorization
+		// Ambil token dari header Authorization (case insensitive)
 		authHeader := c.Get("Authorization")
+		if authHeader == "" {
+			authHeader = c.Get("authorization")
+		}
+
 		if authHeader == "" {
 			return utils.Output(c, "Unauthorized: Missing token", false, 401)
 		}
 
-		// Format token harus "Bearer <token>"
+		// Format token harus "Bearer <token>" (case insensitive)
 		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 || parts[0] != "Bearer" {
+		if len(parts) != 2 || !strings.EqualFold(parts[0], "Bearer") {
 			return utils.Output(c, "Unauthorized: Invalid token format", false, 401)
 		}
 
