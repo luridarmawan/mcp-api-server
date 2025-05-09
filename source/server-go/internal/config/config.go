@@ -9,11 +9,13 @@ import (
 )
 
 type Config struct {
-	AppName     string
-	AppPort     string
-	Debug       bool
-	OcrPlatform string
-	JWTSecret   string
+	AppName            string
+	AppPort            string
+	Debug              bool
+	OcrPlatformDefault string
+	OcrXimplyKey       string
+	OcrNanonetKey      string
+	JWTSecret          string
 }
 
 var Cfg Config
@@ -27,11 +29,13 @@ func LoadConfig() {
 	}
 
 	Cfg = Config{
-		AppName:     getEnv("APP_NAME", "MCP Server"),
-		AppPort:     getEnv("APP_PORT", "8080"),
-		Debug:       getEnv("DEBUG", "false") == "true",
-		OcrPlatform: getEnv("OCR_PLATFORM_DEFAULT", "xyz"),
-		JWTSecret:   getEnv("JWT_SECRET", "your-secret-key"), // Default secret key, sebaiknya diganti di production
+		AppName:            getEnv("APP_NAME", "MCP Server"),
+		AppPort:            getEnv("APP_PORT", "8080"),
+		Debug:              getEnv("DEBUG", "false") == "true",
+		OcrPlatformDefault: getEnv("OCR_PLATFORM_DEFAULT", ""),
+		OcrXimplyKey:       getEnv("XIMPLY_OCR_API_KEY", ""),
+		OcrNanonetKey:      getEnv("NANONET_API_KEY", ""),
+		JWTSecret:          getEnv("JWT_SECRET", "your-secret-key"), // Default secret key, sebaiknya diganti di production
 	}
 }
 

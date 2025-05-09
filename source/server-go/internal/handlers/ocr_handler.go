@@ -44,7 +44,7 @@ func OcrPredictFromURL(c *fiber.Ctx) error {
 	//async := c.QueryBool("async", false) // prepare untuk async method
 
 	if platform == "" {
-		platform = config.Cfg.OcrPlatform
+		platform = config.Cfg.OcrPlatformDefault
 	}
 	fmt.Println("plat: " + platform)
 
