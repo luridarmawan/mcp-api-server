@@ -62,8 +62,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-      security:
-      - BearerAuth: []
       summary: Get employee list
       tags:
       - Employee
@@ -180,6 +178,8 @@ paths:
               success:
                 type: boolean
             type: object
+      security:
+      - BearerAuth: []
       summary: Prediction for Image File
       tags:
       - OCR
@@ -236,6 +236,8 @@ paths:
             processing failed"})
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Prediction for Image URL
       tags:
       - OCR

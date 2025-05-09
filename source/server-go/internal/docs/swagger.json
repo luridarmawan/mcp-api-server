@@ -18,11 +18,6 @@
     "paths": {
         "/employee/list": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Retrieve a paginated list of all employees",
                 "produces": [
                     "application/json"
@@ -153,6 +148,11 @@
         },
         "/ocr/predict_file/{model_id}": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Perform OCR prediction from uploaded image file",
                 "consumes": [
                     "multipart/form-data"
@@ -235,6 +235,11 @@
         },
         "/ocr/predict_url/{model_id}": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Perform OCR prediction from provided image URLs",
                 "consumes": [
                     "application/json"

@@ -28,6 +28,7 @@ import (
 // @Description Perform OCR prediction from provided image URLs
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param model_id path string true "Model ID" Example(ktp-123)
 // // @Param async query bool false "Async processing" Example(false) default(false) hidden(true)
 // @Param request body dto.OcrRequest true "Image URLs" Example({"urls":["https://example.com/image1.jpg"]})
@@ -75,6 +76,7 @@ func OcrPredictFromURL(c *fiber.Ctx) error {
 // @Description Perform OCR prediction from uploaded image file
 // @Accept multipart/form-data
 // @Produce json
+// @Security BearerAuth
 // @Param model_id path string true "Model ID" Example(ktp-123)
 // //@Param async query bool false "Async processing" Example(false)
 // @Param file formData file true "Image File"

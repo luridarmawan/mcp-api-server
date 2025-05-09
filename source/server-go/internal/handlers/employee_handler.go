@@ -14,7 +14,6 @@ import (
 // @Tags Employee
 // @Description Retrieve a paginated list of all employees
 // @Produce json
-// @Security BearerAuth
 // @Success 200 {object} object{success=bool,code=int,data=[]object} "Success response" Example({"success":true,"code":0,"data":[{...}]})
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /employee/list [get]

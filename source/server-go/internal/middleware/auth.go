@@ -2,17 +2,30 @@ package middleware
 
 import (
 	"apiserver/internal/utils"
+	"slices"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+func isAllowedPath(path string) bool {
+	allowed := []string{
+		"/auth/login",
+		"/auth/register",
+		"/docs",
+		"/docs/openapi.json",
+		"/employee/list",       // data demo only
+		"/employee/occupation", // data demo only
+	}
+	return slices.Contains(allowed, path)
+}
 
 // AuthMiddleware adalah middleware untuk memverifikasi token JWT
 func AuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		// Skip middleware untuk endpoint yang tidak memerlukan autentikasi
 		path := c.Path()
-		if path == "/auth/login" || path == "/auth/register" || path == "/docs" || path == "/docs/openapi.json" {
+		if isAllowedPath(path) {
 			return c.Next()
 		}
 
