@@ -37,21 +37,14 @@ jobs:
       #     go install github.com/swaggo/swag/cmd/swag@latest
       #     swag init --dir ./cmd/server --output ./internal/docs
 
-      - name: Deploy and Restart
+      - name: Deploy App
         uses: docker://luri/ssh-client:latest
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ secrets.USER_NAME }}
           SSH_HOST: ${{ secrets.HOST_NAME }}
           TARGET_DIR: "~/app/server-go"
+          BINARY_NAME: "api-server"  # Bisa diganti per-environment
         with:
           entrypoint: /bin/sh
-          args: |
-            -c "
-            mkdir -p ~/.ssh &&
-            echo \"\$SSH_PRIVATE_KEY\" > ~/.ssh/id_rsa &&
-            chmod 600 ~/.ssh/id_rsa &&
-            echo -e \"Host *\\n\\tStrictHostKeyChecking no\\n\" > ~/.ssh/config &&
-            scp -i ~/.ssh/id_rsa source/server-go/bin/api-server \$SSH_USER@\$SSH_HOST:\$TARGET_DIR &&
-            ssh -i ~/.ssh/id_rsa \$SSH_USER@\$SSH_HOST 'systemctl --user restart api-server'
-            "
+          args: -c "./deploy.sh"
