@@ -25,7 +25,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: source/server-go
-        run: go mod tidy
+        run: |
+          go install github.com/swaggo/swag/cmd/swag@latest
+          go mod tidy
 
       - name: Build binary
         working-directory: source/server-go
