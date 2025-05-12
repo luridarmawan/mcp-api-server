@@ -1,4 +1,4 @@
-name: Build and Deploy to VPS
+name: Build and Deploy Server-GO to VPS
 
 on:
   push:
@@ -9,15 +9,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # container:
-    #   image: luri/ssh-client:latest
-
-    env:
-      SSH_USER: ${{ secrets.USER_NAME }}
-      SSH_HOST: ${{ secrets.HOST_NAME }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      TARGET_DIR: "~/app/server-go"
-      BINARY_NAME: "api-server"
 
     steps:
       - name: Checkout source code
@@ -26,51 +17,45 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.24"
+          go-version: '1.21'
 
-      - name: Build Go binary
-        run: |
-          cd source/server-go
-          go mod tidy
-          mkdir -p bin
-          go build -o bin/$BINARY_NAME ./cmd/server
+      - name: Change to project directory
+        working-directory: source/server-go
+        run: echo "Moved to source/server-go"
 
-      - name: Prepare deploy script
-        run: |
-          cat << 'EOF' > deploy.sh
-          #!/bin/sh
+      - name: Install dependencies
+        working-directory: source/server-go
+        run: go mod tidy
 
-          set -e
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - name: Build binary
+        working-directory: source/server-go
+        run: go build -o bin/api-server ./cmd/server
 
-          LOCAL_BINARY="source/server-go/bin/$BINARY_NAME"
-          REMOTE_TMP="$TARGET_DIR/$BINARY_NAME.tmp"
-          REMOTE_FINAL="$TARGET_DIR/$BINARY_NAME"
+      # - name: Generate OpenAPI Docs
+      #   working-directory: source/server-go
+      #   run: |
+      #     go install github.com/swaggo/swag/cmd/swag@latest
+      #     swag init --dir ./cmd/server --output ./internal/docs
 
-          LOCAL_HASH=$(sha256sum "$LOCAL_BINARY" | awk '{print $1}')
-          scp -i ~/.ssh/id_rsa "$LOCAL_BINARY" "$SSH_USER@$SSH_HOST:$REMOTE_TMP"
-          REMOTE_HASH=$(ssh -i ~/.ssh/id_rsa "$SSH_USER@$SSH_HOST" "sha256sum $REMOTE_TMP | awk '{print \$1}'")
+      - name: Copy binary
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "source/server-go/bin/api-server"
+          target: "~/app/server-go"
 
-          echo "Local  : $LOCAL_HASH"
-          echo "Remote : $REMOTE_HASH"
+      - name: Restart service
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            systemctl --user restart api-server
 
-          if [ "$LOCAL_HASH" = "$REMOTE_HASH" ]; then
-            echo "✅ Hash cocok, deploy dilanjutkan."
-            ssh -i ~/.ssh/id_rsa "$SSH_USER@$SSH_HOST" "
-              mv $REMOTE_TMP $REMOTE_FINAL &&
-              chmod +x $REMOTE_FINAL &&
-              systemctl --user restart $BINARY_NAME
-            "
-          else
-            echo "❌ Hash tidak cocok, deploy dibatalkan."
-            exit 1
-          fi
-          EOF
-
-          chmod +x deploy.sh
-
-      - name: Run deploy
-        run: ./deploy.sh
+            # pkill api-server || true
+            # nohup ~/apps/mcp-server > ~/apps/mcp.log 2>&1 &
