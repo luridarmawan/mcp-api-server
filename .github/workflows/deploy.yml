@@ -44,8 +44,8 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "source/server-go/bin/api-server"
-          target: "~/app/server-go"
+          source: "./source/server-go/bin/api-server"
+          target: "~/app/server-go/api-server"
 
       - name: Restart service
         uses: appleboy/ssh-action@v1
