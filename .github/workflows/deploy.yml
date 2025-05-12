@@ -29,7 +29,8 @@ jobs:
 
       - name: Build binary
         working-directory: source/server-go
-        run: go build -o bin/api-server ./cmd/server
+        # run: go build -o bin/api-server ./cmd/server
+        run: make build-arm64
 
       # - name: Generate OpenAPI Docs
       #   working-directory: source/server-go
@@ -44,7 +45,7 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "./source/server-go/bin/api-server"
+          source: "./source/server-go/bin/api-server-arm64"
           target: "~/app/server-go/api-server"
           strip_components: 3
 
