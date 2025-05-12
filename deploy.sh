@@ -13,7 +13,13 @@ echo "📦 Menyiapkan koneksi SSH dan SCP"
 mkdir -p ~/.ssh
 echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
-echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+
+# disable verifikasi fingerprint host
+cat <<EOT > ~/.ssh/config
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
+EOT
 
 echo "🔐 Menghitung hash SHA-256 binary lokal"
 LOCAL_HASH=$(sha256sum "$LOCAL_BINARY_PATH" | awk '{print $1}')
