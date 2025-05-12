@@ -1,4 +1,4 @@
-# MCP & API dengan Go
+# MCP & API Server dengan Golang
 
 
 
@@ -20,7 +20,7 @@ Install Gow
 go install github.com/mitranim/gow@latest
 ```
 
-Halankan dengan:
+Jalankan dengan:
 ```bash
 gow run cmd/server/main.go
 ```
@@ -32,7 +32,7 @@ Install Air
 go install github.com/cosmtrek/air@latest
 ```
 
-Halankan dengan:
+Jalankan dengan:
 ```bash
 air
 ```
@@ -45,7 +45,7 @@ Install Mod
 go install github.com/cortesi/modd/cmd/modd@latest
 ```
 
-Halankan dengan:
+Jalankan dengan:
 ```bash
 modd
 ```
