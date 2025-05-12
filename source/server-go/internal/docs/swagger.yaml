@@ -1,0 +1,253 @@
+basePath: /
+definitions:
+  dto.BaseResponse:
+    properties:
+      code:
+        description: '@Example 99'
+        type: integer
+      data: {}
+      success:
+        description: '@Example true'
+        type: boolean
+    type: object
+  dto.ErrorResponse:
+    properties:
+      message:
+        description: '@Example "Invalid request"'
+        type: string
+      success:
+        description: '@Example false'
+        type: boolean
+    type: object
+  dto.OcrRequest:
+    properties:
+      urls:
+        description: '@Example ["https://example.com/image1.jpg"]'
+        items:
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - urls
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: halo@carik.id
+    name: CARIK Team
+  description: API Documentation.
+  title: My API
+  version: 1.0.0
+paths:
+  /employee/list:
+    get:
+      description: Retrieve a paginated list of all employees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response" Example({"success":true,"code":0,"data":[{...}]})
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                items:
+                  type: object
+                type: array
+              success:
+                type: boolean
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get employee list
+      tags:
+      - Employee
+  /employee/occupation:
+    get:
+      description: Retrieve available occupations, optionally filtered by employee
+        code
+      parameters:
+      - description: Filter by employee code
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get employee occupations
+      tags:
+      - Employee
+  /mcp:
+    post:
+      consumes:
+      - application/json
+      description: Handle MCP request processing
+      parameters:
+      - description: MCP Request
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Execute MCP request
+      tags:
+      - MCP
+  /ocr/predict_file/{model_id}:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Perform OCR prediction from uploaded image file
+      parameters:
+      - description: Model ID
+        example: ktp-123
+        in: path
+        name: model_id
+        required: true
+        type: string
+      - description: Image File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response" Example({"success":true,"modelId":"model-123","filename":"image.jpg","result":{"predictions":[{"label":"text","confidence":0.95}]}})
+          schema:
+            properties:
+              filename:
+                type: string
+              model_id:
+                type: string
+              result:
+                type: object
+              success:
+                type: boolean
+            type: object
+        "400":
+          description: Bad Request" Example({"success":false,"error":"File not found"})
+          schema:
+            properties:
+              error:
+                type: string
+              success:
+                type: boolean
+            type: object
+        "500":
+          description: Internal Server Error" Example({"success":false,"error":"OCR
+            processing failed"})
+          schema:
+            properties:
+              error:
+                type: string
+              success:
+                type: boolean
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Prediction for Image File
+      tags:
+      - OCR
+  /ocr/predict_url/{model_id}:
+    post:
+      consumes:
+      - application/json
+      description: Perform OCR prediction from provided image URLs
+      parameters:
+      - description: Model ID
+        example: ktp-123
+        in: path
+        name: model_id
+        required: true
+        type: string
+      - description: Image URLs
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OcrRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response" Example({"success":true,"modelId":"model-123","async":false,"received":["url1"],"result":{"predictions":[{"label":"text","confidence":0.95}]}})
+          schema:
+            properties:
+              async:
+                type: boolean
+              model_id:
+                type: string
+              received:
+                items:
+                  type: string
+                type: array
+              result:
+                type: object
+              success:
+                type: boolean
+            type: object
+        "400":
+          description: Bad Request" Example({"success":false,"error":"Invalid request
+            body"})
+          schema:
+            properties:
+              error:
+                type: string
+              success:
+                type: boolean
+            type: object
+        "500":
+          description: Internal Server Error" Example({"success":false,"code":500,"message":"OCR
+            processing failed"})
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Prediction for Image URL
+      tags:
+      - OCR
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    description: 'Format: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

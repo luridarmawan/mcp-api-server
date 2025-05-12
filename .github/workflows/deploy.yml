@@ -1,0 +1,61 @@
+name: Build and Deploy Server-GO to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Change to project directory
+        working-directory: source/server-go
+        run: echo "Moved to source/server-go"
+
+      - name: Install dependencies
+        working-directory: source/server-go
+        run: go mod tidy
+
+      - name: Build binary
+        working-directory: source/server-go
+        run: go build -o bin/api-server ./cmd/server
+
+      # - name: Generate OpenAPI Docs
+      #   working-directory: source/server-go
+      #   run: |
+      #     go install github.com/swaggo/swag/cmd/swag@latest
+      #     swag init --dir ./cmd/server --output ./internal/docs
+
+      - name: Copy binary to VPS via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "source/server-go/bin/mcp-server"
+          target: "~/app/server-go"
+
+      - name: Restart service
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            systemctl --user restart api-server
+
+            # pkill mcp-server || true
+            # nohup ~/apps/mcp-server > ~/apps/mcp.log 2>&1 &

@@ -1,0 +1,63 @@
+[
+    {
+      "id": 1,
+      "code": "A1023",
+      "fullname": "Andi Pratama",
+      "city": "Jakarta"
+    },
+    {
+      "id": 2,
+      "code": "B1456",
+      "fullname": "Siti Nurhaliza",
+      "city": "Bandung"
+    },
+    {
+      "id": 3,
+      "code": "C1789",
+      "fullname": "Rudi Hartono",
+      "city": "Surabaya"
+    },
+    {
+      "id": 4,
+      "code": "D1204",
+      "fullname": "Dewi Sartika",
+      "city": "Medan"
+    },
+    {
+      "id": 5,
+      "code": "E1678",
+      "fullname": "Agus Salim",
+      "city": "Yogyakarta"
+    },
+    {
+      "id": 6,
+      "code": "F1345",
+      "fullname": "Fitriani Anwar",
+      "city": "Makassar"
+    },
+    {
+      "id": 7,
+      "code": "G1980",
+      "fullname": "Budi Santoso",
+      "city": "Semarang"
+    },
+    {
+      "id": 8,
+      "code": "H1032",
+      "fullname": "Rina Marlina",
+      "city": "Palembang"
+    },
+    {
+      "id": 9,
+      "code": "I1654",
+      "fullname": "Ahmad Fauzi",
+      "city": "Malang"
+    },
+    {
+      "id": 10,
+      "code": "J1567",
+      "fullname": "Nadia Rahma",
+      "city": "Denpasar"
+    }
+  ]
+  
