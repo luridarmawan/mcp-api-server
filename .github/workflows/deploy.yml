@@ -37,25 +37,21 @@ jobs:
       #     go install github.com/swaggo/swag/cmd/swag@latest
       #     swag init --dir ./cmd/server --output ./internal/docs
 
-      - name: Copy binary to VPS via SCP
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy and Restart
+        uses: docker://luri/ssh-client:latest
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USER: ${{ secrets.USER_NAME }}
+          SSH_HOST: ${{ secrets.HOST_NAME }}
+          TARGET_DIR: "~/app/server-go"
         with:
-          host: ${{ secrets.HOST_NAME }}
-          username: ${{ secrets.USER_NAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          source: "source/server-go/bin/mcp-server"
-          target: "~/app/server-go"
-
-      - name: Restart service
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.HOST_NAME }}
-          username: ${{ secrets.USER_NAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            systemctl --user restart api-server
-
-            # pkill mcp-server || true
-            # nohup ~/apps/mcp-server > ~/apps/mcp.log 2>&1 &
+          entrypoint: /bin/sh
+          args: |
+            -c "
+            mkdir -p ~/.ssh &&
+            echo \"\$SSH_PRIVATE_KEY\" > ~/.ssh/id_rsa &&
+            chmod 600 ~/.ssh/id_rsa &&
+            echo -e \"Host *\\n\\tStrictHostKeyChecking no\\n\" > ~/.ssh/config &&
+            scp -i ~/.ssh/id_rsa source/server-go/bin/api-server \$SSH_USER@\$SSH_HOST:\$TARGET_DIR &&
+            ssh -i ~/.ssh/id_rsa \$SSH_USER@\$SSH_HOST 'systemctl --user restart api-server'
+            "
