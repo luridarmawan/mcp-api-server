@@ -9,8 +9,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    container:
-      image: luri/ssh-client:latest
+    # container:
+    #   image: luri/ssh-client:latest
 
     env:
       SSH_USER: ${{ secrets.USER_NAME }}
