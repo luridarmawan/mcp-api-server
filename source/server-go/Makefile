@@ -23,11 +23,13 @@ docs:
 	  --exclude ./data,./bin,sync/atomic
 
 build:
-	make docs
 	go mod tidy
+	make docs
 	go build -o bin/api-server ./cmd/server
 
 build-arm64:
+	go mod tidy
+	make docs
 	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w" -o $(OUTPUT_DIR)/$(APP_NAME)-arm64 ./cmd/server
 
 
