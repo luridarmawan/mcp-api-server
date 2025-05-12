@@ -46,6 +46,7 @@ jobs:
           port: 22
           source: "./source/server-go/bin/api-server"
           target: "~/app/server-go/api-server"
+          strip_components: 3
 
       - name: Restart service
         uses: appleboy/ssh-action@v1
