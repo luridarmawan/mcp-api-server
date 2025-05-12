@@ -47,4 +47,4 @@ jobs:
           BINARY_NAME: "api-server"  # Bisa diganti per-environment
         with:
           entrypoint: /bin/sh
-          args: -c "./deploy.sh"
+          args: -c "sh deploy.sh"
