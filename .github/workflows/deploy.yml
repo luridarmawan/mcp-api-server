@@ -11,9 +11,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    env:
-      BRANCH_NAME: ${{ github.ref_name }}
-
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -35,51 +32,49 @@ jobs:
 
       - name: Build binary
         working-directory: source/server-go
-        run: make build-arm64
-
-      # - name: Generate OpenAPI Docs
-      #   working-directory: source/server-go
-      #   run: |
-      #     go install github.com/swaggo/swag/cmd/swag@latest
-      #     swag init --dir ./cmd/server --output ./internal/docs
-
-      - name: Set deployment config
-        id: config
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            printf "%s\n" "${{ secrets.PROD_SSH_KEY }}" > /tmp/id_rsa
-            echo "HOST=${{ secrets.PROD_HOST }}" >> $GITHUB_ENV
-            echo "USER=${{ secrets.PROD_USER }}" >> $GITHUB_ENV
-            echo "KEY=/tmp/id_rsa" >> $GITHUB_ENV
-            echo "TARGET=~/app/server-go/api-server" >> $GITHUB_ENV
-          else
-            printf "%s\n" "${{ secrets.DEV_SSH_KEY }}" > /tmp/id_rsa
-            echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
-            echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
-            echo "KEY=/tmp/id_rsa" >> $GITHUB_ENV
-            echo "TARGET=~/app/server-go/api-server" >> $GITHUB_ENV
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            make build-arm64
+            echo "BUILD_OUTPUT=api-server-arm64" >> $GITHUB_ENV
+          elif [ "$GITHUB_REF" = "refs/heads/development" ]; then
+            make build-arm64
+            echo "BUILD_OUTPUT=api-server-arm64" >> $GITHUB_ENV
           fi
-          chmod 600 /tmp/id_rsa
-          echo "Dev Host: ${{ env.HOST }} / ${{ env.USER }}"
-        shell: bash
 
-      - name: Copy binary
+      - name: Determine deployment target
+        id: deployment
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            echo "HOST=${{ secrets.PROD_HOST }}" >> $GITHUB_OUTPUT
+            echo "USERNAME=${{ secrets.PROD_USER }}" >> $GITHUB_OUTPUT
+            echo "SSH_KEY=${{ secrets.PROD_SSH_KEY }}" >> $GITHUB_OUTPUT
+            echo "TARGET_PATH=~/app/server-go/api-server" >> $GITHUB_OUTPUT
+            echo "SERVICE_NAME=api-server" >> $GITHUB_OUTPUT
+          elif [ "$GITHUB_REF" = "refs/heads/development" ]; then
+            echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_OUTPUT
+            echo "USERNAME=${{ secrets.DEV_USER }}" >> $GITHUB_OUTPUT
+            echo "SSH_KEY=${{ secrets.DEV_SSH_KEY }}" >> $GITHUB_OUTPUT
+            echo "TARGET_PATH=~/app/server-go/api-server" >> $GITHUB_OUTPUT
+            echo "SERVICE_NAME=api-server" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Copy binary to server
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ env.HOST }}
-          username: ${{ env.USER }}
-          key: ${{ env.KEY }}
+          host: ${{ steps.deployment.outputs.HOST }}
+          username: ${{ steps.deployment.outputs.USERNAME }}
+          key: ${{ steps.deployment.outputs.SSH_KEY }}
           port: 22
-          source: "./source/server-go/bin/api-server-arm64"
-          target: "${{ env.TARGET }}/api-server"
+          source: "./source/server-go/bin/${{ env.BUILD_OUTPUT }}"
+          target: ${{ steps.deployment.outputs.TARGET_PATH }}
           strip_components: 3
 
       - name: Restart service
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ env.HOST }}
-          username: ${{ env.USER }}
-          key: ${{ env.KEY }}
+          host: ${{ steps.deployment.outputs.HOST }}
+          username: ${{ steps.deployment.outputs.USERNAME }}
+          key: ${{ steps.deployment.outputs.SSH_KEY }}
           port: 22
           script: |
-            systemctl --user restart api-server
+            systemctl --user restart ${{ steps.deployment.outputs.SERVICE_NAME }}
