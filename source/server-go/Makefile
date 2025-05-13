@@ -6,6 +6,12 @@
 
 APP_NAME = api-server
 OUTPUT_DIR = bin
+PACKAGE := apiserver/internal
+
+VERSION := $(shell git describe --tags --always 2>/dev/null || echo "dev")
+GIT_COMMIT := $(shell git rev-parse --short HEAD)
+BUILD_DATE := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+LDFLAGS := -X $(PACKAGE)/config.Version=$(VERSION) -X $(PACKAGE)/config.GitCommit=$(GIT_COMMIT) -X $(PACKAGE)/config.BuildDate=$(BUILD_DATE)
 
 dev:
 	make docs
@@ -25,12 +31,13 @@ docs:
 build:
 	go mod tidy
 	make docs
-	go build -o bin/api-server ./cmd/server
+	# go build -o bin/api-server ./cmd/server
+	go build -o $(OUTPUT_DIR)/$(APP_NAME) -ldflags "$(LDFLAGS)" ./cmd/server
 
 build-arm64:
 	go mod tidy
 	make docs
-	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w" -o $(OUTPUT_DIR)/$(APP_NAME)-arm64 ./cmd/server
+	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o $(OUTPUT_DIR)/$(APP_NAME)-arm64 -ldflags "$(LDFLAGS)" ./cmd/server
 
 
 tidy:
