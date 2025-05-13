@@ -18,7 +18,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: '1.24'
 
       - name: Change to project directory
         working-directory: source/server-go
@@ -41,40 +41,48 @@ jobs:
             echo "BUILD_OUTPUT=api-server-arm64" >> $GITHUB_ENV
           fi
 
-      - name: Determine deployment target
-        id: deployment
-        run: |
-          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
-            echo "HOST=${{ secrets.PROD_HOST }}" >> $GITHUB_OUTPUT
-            echo "USERNAME=${{ secrets.PROD_USER }}" >> $GITHUB_OUTPUT
-            echo "SSH_KEY=${{ secrets.PROD_SSH_KEY }}" >> $GITHUB_OUTPUT
-            echo "TARGET_PATH=~/app/server-go/api-server" >> $GITHUB_OUTPUT
-            echo "SERVICE_NAME=api-server" >> $GITHUB_OUTPUT
-          elif [ "$GITHUB_REF" = "refs/heads/development" ]; then
-            echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_OUTPUT
-            echo "USERNAME=${{ secrets.DEV_USER }}" >> $GITHUB_OUTPUT
-            echo "SSH_KEY=${{ secrets.DEV_SSH_KEY }}" >> $GITHUB_OUTPUT
-            echo "TARGET_PATH=~/app/server-go/api-server" >> $GITHUB_OUTPUT
-            echo "SERVICE_NAME=api-server" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Copy binary to server
+      - name: Copy binary to production (main branch)
+        if: github.ref == 'refs/heads/main'
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ steps.deployment.outputs.HOST }}
-          username: ${{ steps.deployment.outputs.USERNAME }}
-          key: ${{ steps.deployment.outputs.SSH_KEY }}
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
           port: 22
           source: "./source/server-go/bin/${{ env.BUILD_OUTPUT }}"
-          target: ${{ steps.deployment.outputs.TARGET_PATH }}
+          target: "~/app/server-go/api-server"
           strip_components: 3
 
-      - name: Restart service
+      - name: Restart production service
+        if: github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ steps.deployment.outputs.HOST }}
-          username: ${{ steps.deployment.outputs.USERNAME }}
-          key: ${{ steps.deployment.outputs.SSH_KEY }}
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
           port: 22
           script: |
-            systemctl --user restart ${{ steps.deployment.outputs.SERVICE_NAME }}
+            systemctl --user restart api-server
+
+      - name: Copy binary to development
+        if: github.ref == 'refs/heads/development'
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          port: 22
+          source: "./source/server-go/bin/${{ env.BUILD_OUTPUT }}"
+          target: "~/app/server-go/api-server"
+          strip_components: 3
+
+      - name: Restart development service
+        if: github.ref == 'refs/heads/development'
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          port: 22
+          script: |
+            systemctl --user restart api-server
