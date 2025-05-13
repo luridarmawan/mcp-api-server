@@ -32,6 +32,7 @@ import (
 func main() {
 	config.LoadConfig()
 	fmt.Printf("%s running on port %s...\n", config.Cfg.AppName, config.Cfg.AppPort)
+	fmt.Printf("Build Date: %s\n", config.Cfg.BuildDate)
 
 	// Create Fiber app with increased header limit
 	app := fiber.New(fiber.Config{
@@ -73,6 +74,15 @@ func main() {
 		html := string(data)
 		c.Set("Content-Type", "text/html")
 		return c.SendString(html)
+	})
+
+	// Show Version
+	app.Get("/version", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"app":           config.Cfg.AppName,
+			"build_version": config.Cfg.Version,
+			"build_date":    config.Cfg.BuildDate,
+		})
 	})
 
 	// Gunakan middleware autentikasi secara global

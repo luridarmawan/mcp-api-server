@@ -1,10 +1,8 @@
 package config
 
 import (
-	// "log"
 	"os"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
 
@@ -16,12 +14,26 @@ type Config struct {
 	OcrXimplyKey       string
 	OcrNanonetKey      string
 	JWTSecret          string
+
+	// Build info
+	Version   string
+	GitCommit string
+	BuildDate string
 }
 
+// Global variable to hold loaded config
 var Cfg Config
 
+// These variables are injected at build time using -ldflags
+var (
+	Version   string
+	GitCommit string
+	BuildDate string
+)
+
+// LoadConfig reads environment variables and fills the config struct
 func LoadConfig() {
-	_ = godotenv.Load() // silently load .env (ignore error if missing)
+	_ = godotenv.Load() // Optional: load .env file if exists
 
 	env := os.Getenv("ENV")
 	if env == "" {
@@ -36,47 +48,18 @@ func LoadConfig() {
 		OcrXimplyKey:       getEnv("XIMPLY_OCR_API_KEY", ""),
 		OcrNanonetKey:      getEnv("NANONET_API_KEY", ""),
 		JWTSecret:          getEnv("JWT_SECRET", "your-secret-key"), // Default secret key, sebaiknya diganti di production
+
+		// Inject build-time values
+		Version:   Version,
+		GitCommit: GitCommit,
+		BuildDate: BuildDate,
 	}
 }
 
-func getEnv(key string, fallback string) string {
-	env := os.Getenv("ENV")
-	if env == "" {
-		env = "dev"
+// getEnv reads a key from the environment with a fallback default
+func getEnv(key string, defaultVal string) string {
+	if val, exists := os.LookupEnv(key); exists {
+		return val
 	}
-
-	// Key yang dikecualikan dari suffix environment
-	excludedKeys := map[string]bool{
-		"APP_NAME": true,
-		"APP_PORT": true,
-		"DEBUG":    true,
-	}
-
-	var envKey string
-	if excludedKeys[key] {
-		envKey = key
-	} else {
-		var suffix string
-		switch env {
-		case "dev":
-			suffix = "_DEV"
-		case "staging":
-			suffix = "_STG"
-		case "prod", "production":
-			suffix = "_PROD"
-		default:
-			suffix = "_DEV"
-		}
-		envKey = key + suffix
-	}
-
-	if value, exists := os.LookupEnv(envKey); exists {
-		return value
-	}
-	return fallback
-}
-
-func NewFiberApp() *fiber.App {
-	app := fiber.New()
-	return app
+	return defaultVal
 }
