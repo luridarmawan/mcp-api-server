@@ -60,6 +60,7 @@ jobs:
             echo "TARGET=~/app/server-go/api-server" >> $GITHUB_ENV
           fi
           chmod 600 /tmp/id_rsa
+          echo "Dev Host: ${{ env.HOST }} / ${{ env.USER }}"
         shell: bash
 
       - name: Copy binary
