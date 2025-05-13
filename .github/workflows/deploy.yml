@@ -47,13 +47,13 @@ jobs:
         id: config
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "${{ secrets.PROD_SSH_KEY }}" > /tmp/id_rsa
+            printf "%s\n" "${{ secrets.PROD_SSH_KEY }}" > /tmp/id_rsa
             echo "HOST=${{ secrets.PROD_HOST }}" >> $GITHUB_ENV
             echo "USER=${{ secrets.PROD_USER }}" >> $GITHUB_ENV
             echo "KEY=/tmp/id_rsa" >> $GITHUB_ENV
             echo "TARGET=~/app/server-go/api-server" >> $GITHUB_ENV
           else
-            echo "${{ secrets.DEV_SSH_KEY }}" > /tmp/id_rsa
+            printf "%s\n" "${{ secrets.DEV_SSH_KEY }}" > /tmp/id_rsa
             echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
             echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
             echo "KEY=/tmp/id_rsa" >> $GITHUB_ENV
