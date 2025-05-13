@@ -4,11 +4,15 @@ on:
   push:
     branches:
       - main
+      - development
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      BRANCH_NAME: ${{ github.ref_name }}
 
     steps:
       - name: Checkout source code
@@ -31,7 +35,6 @@ jobs:
 
       - name: Build binary
         working-directory: source/server-go
-        # run: go build -o bin/api-server ./cmd/server
         run: make build-arm64
 
       # - name: Generate OpenAPI Docs
@@ -40,26 +43,38 @@ jobs:
       #     go install github.com/swaggo/swag/cmd/swag@latest
       #     swag init --dir ./cmd/server --output ./internal/docs
 
+      - name: Set deployment config
+        id: config
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "HOST=${{ secrets.PROD_HOST }}" >> $GITHUB_ENV
+            echo "USER=${{ secrets.PROD_USER }}" >> $GITHUB_ENV
+            echo "KEY=${{ secrets.PROD_SSH_KEY }}" >> $GITHUB_ENV
+            echo "TARGET=~/app/server-go" >> $GITHUB_ENV
+          else
+            echo "HOST=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
+            echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
+            echo "KEY=${{ secrets.DEV_SSH_KEY }}" >> $GITHUB_ENV
+            echo "TARGET=~/dev/server-go" >> $GITHUB_ENV
+          fi
+
       - name: Copy binary
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.HOST_NAME }}
-          username: ${{ secrets.USER_NAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ env.HOST }}
+          username: ${{ env.USER }}
+          key: ${{ env.KEY }}
           port: 22
           source: "./source/server-go/bin/api-server-arm64"
-          target: "~/app/server-go/api-server"
+          target: "${{ env.TARGET }}/api-server"
           strip_components: 3
 
       - name: Restart service
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.HOST_NAME }}
-          username: ${{ secrets.USER_NAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ env.HOST }}
+          username: ${{ env.USER }}
+          key: ${{ env.KEY }}
           port: 22
           script: |
             systemctl --user restart api-server
-
-            # pkill api-server || true
-            # nohup ~/apps/mcp-server > ~/apps/mcp.log 2>&1 &
