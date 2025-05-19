@@ -3,6 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const {
   OPENAI_API_KEY,
   OPENAI_MODEL,
+  OPENAI_BASEURL,
   GEMINI_API_KEY,
   GEMINI_MODEL,
   LLM_PROVIDER
@@ -11,61 +12,79 @@ const {
 const { discoverFunctions } = require('./mcp');
 
 async function chatWithLLM(messages) {
-  const functions = await discoverFunctions();
+  try {
+    const functions = await discoverFunctions();
 
-  if (LLM_PROVIDER === 'openai') {
-    const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+    if (LLM_PROVIDER === 'openai') {
+      const config = { apiKey: OPENAI_API_KEY };
+      if (OPENAI_BASEURL) config.baseURL = OPENAI_BASEURL;
 
-    const res = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      messages,
-      functions,
-      function_call: 'auto'
-    });
+      const openai = new OpenAI(config);
+      const res = await openai.chat.completions.create({
+        model: OPENAI_MODEL,
+        messages,
+        functions,
+        function_call: 'auto'
+      });
 
-    return res.choices[0].message;
-  }
-
-  if (LLM_PROVIDER === 'gemini') {
-    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
-
-    // Bangun deskripsi fungsi MCP
-    const pluginDescriptions = functions.map(fn =>
-      `- ${fn.name}: ${fn.description || 'No description.'}`
-    ).join('\n');
-
-    const mcpInstruction = `You can call external tools via MCP plugins:\n${pluginDescriptions}`;
-
-    // Gabungkan dengan pesan system yang ada
-    const userSystemMessage = messages.find(msg => msg.role === 'system')?.content;
-    const fullSystemPrompt = [mcpInstruction, userSystemMessage].filter(Boolean).join('\n\n');
-
-    // Buat history Gemini
-    const nonSystemMessages = messages.filter(msg => msg.role !== 'system');
-    const history = [];
-
-    if (fullSystemPrompt) {
-      history.push({ role: 'user', parts: [{ text: fullSystemPrompt }] });
+      return {
+        role: 'assistant',
+        content: res.choices[0].message.content,
+        function_call: res.choices[0].message.function_call
+      };
     }
 
-    nonSystemMessages.forEach(msg => {
-      if (msg.role === 'user') {
-        history.push({ role: 'user', parts: [{ text: msg.content }] });
-      } else if (msg.role === 'assistant') {
-        history.push({ role: 'model', parts: [{ text: msg.content }] });
+    if (LLM_PROVIDER === 'gemini') {
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
+
+      // Build function descriptions
+      const pluginDescriptions = functions.map(fn =>
+        `- ${fn.name}: ${fn.description || 'No description'}`
+      ).join('\n');
+
+      const mcpInstruction = `You can call external tools via MCP plugins:\n${pluginDescriptions}`;
+
+      // Process messages for Gemini
+      const systemMessages = messages.filter(msg => msg.role === 'system');
+      const otherMessages = messages.filter(msg => msg.role !== 'system');
+
+      const contents = [];
+
+      // Combine all system messages with MCP instructions
+      if (systemMessages.length > 0 || pluginDescriptions) {
+        const systemContent = [
+          mcpInstruction,
+          ...systemMessages.map(msg => msg.content)
+        ].filter(Boolean).join('\n\n');
+
+        contents.push({ role: 'user', parts: [{ text: systemContent }] });
       }
-    });
 
-    const result = await model.generateContent({ contents: history });
+      // Add conversation history
+      otherMessages.forEach(msg => {
+        const role = msg.role === 'user' ? 'user' : 'model';
+        contents.push({
+          role,
+          parts: [{ text: msg.content }]
+        });
+      });
 
-    return {
-      role: 'assistant',
-      content: result.response.text()
-    };
+      const result = await model.generateContent({ contents });
+      const responseText = await result.response.text();
+
+      return {
+        role: 'assistant',
+        content: responseText,
+        function_call: null // Gemini doesn't support function calling natively
+      };
+    }
+
+    throw new Error(`Unsupported LLM provider: ${LLM_PROVIDER}`);
+  } catch (error) {
+    console.error('Error in chatWithLLM:', error);
+    throw new Error(`Failed to get LLM response: ${error.message}`);
   }
-
-  throw new Error(`Unsupported LLM provider: ${LLM_PROVIDER}`);
 }
 
 module.exports = { chatWithLLM };
