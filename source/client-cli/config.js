@@ -5,8 +5,9 @@ module.exports = {
   LLM_PROVIDER: process.env.LLM_PROVIDER || 'openai',
 
   // OpenAI
+  OPENAI_BASEURL: process.env.OPENAI_BASEURL,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-  OPENAI_MODEL: 'gpt-4-turbo', // gpt-4o
+  OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4-turbo',
 
   // GEMINI
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
