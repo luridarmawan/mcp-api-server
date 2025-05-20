@@ -53,7 +53,7 @@ export default new Elysia({ prefix: '/mcp' })
   }, {
     detail: {
       tags: ["MCP"],
-      summary: "Get prayer times"
+      summary: "Get prayer times for a specific city."
     }
   })
   .post("/prayerSchedule/", async ({ params, body }) => {
@@ -62,7 +62,7 @@ export default new Elysia({ prefix: '/mcp' })
   }, {
     detail: {
       tags: ["MCP"],
-      summary: "Get prayer times for a specific city."
+      summary: "Get prayer times. Default city is Jakarta."
     }
   })
 
@@ -169,14 +169,14 @@ export default new Elysia({ prefix: '/mcp' })
         },
         {
           name: 'prayerSchedule',
-          description: 'Prayer Schedule',
+          description: 'Prayer Schedule. Default city is Jakarta.',
           parameters: {
             type: 'object',
             properties: {
               city: { type: 'string' },
             },
           },
-          endpoint: '/mcp/prayerSchedule'
+          url: '/prayerSchedule'
         },
         {
           name: 'registerToEvent',

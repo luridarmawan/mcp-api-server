@@ -4,7 +4,8 @@
   "description": "OpenAI MCP Client Agent",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "dev": "bun --watch index.js",
+    "start": "bun index.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
