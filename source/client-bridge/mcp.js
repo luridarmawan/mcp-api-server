@@ -132,16 +132,17 @@ export async function callFunction(functions, functionName, args) {
   args['mcp'] = true;
 
   let url = MCP_SERVER_URL + func.url;
-  url = url.replace(`//..`, `/..`);
   let method = func.method.toLowerCase();
   if (method=='internal') method = 'post'
 
   if (method === 'get' && args && Object.keys(args).length > 0) {
     url += '?' + new URLSearchParams(args).toString();
   }
+  url = url.replace(`//..`, `/..`);
+  url = url.replace(`??`, `?`);
   utils.think(`  url: ${url}`);
   utils.think(`    args: ${JSON.stringify(args)}`);
-  
+
   const res = await axios({
     method,
     url,
@@ -153,7 +154,39 @@ export async function callFunction(functions, functionName, args) {
     result = func.response_mapping.path.split('.').reduce((obj, key) => obj?.[key], result);
   }
 
-  return result;
+  // return result; <<-- simple result
+
+  // Tambahkan generated text yang lebih informatif
+  try {
+    const humanReadableResult = await makeHumanReadable({
+      function_name: functionName,
+      function_description: func.description || '',
+      raw_result: result,
+      timestamp: new Date().toISOString()
+    });
+
+    return {
+      raw_data: result,
+      human_readable: humanReadableResult,
+      metadata: {
+        function_name: functionName,
+        timestamp: new Date().toISOString(),
+        status: 'success'
+      }
+    };
+  } catch (error) {
+    console.error('Error generating human readable text:', error);
+    return {
+      raw_data: result,
+      human_readable: `Hasil dari fungsi ${functionName}: ${JSON.stringify(result, null, 2)}`,
+      metadata: {
+        function_name: functionName,
+        timestamp: new Date().toISOString(),
+        status: 'success_with_fallback'
+      }
+    };
+  }
+
 }
 
 export async function makeHumanReadable(params) {

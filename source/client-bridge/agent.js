@@ -1,4 +1,3 @@
-
 const mcp = require("./mcp")
 const utils = require("./utils")
 const { LLM_PROVIDER } = require('./config');
@@ -23,8 +22,7 @@ async function chatWithAgent(messages) {
             utils.think(`found function: ${functionName}`);
             const args = response.function_call.arguments || {};
             const functionResult = await mcp.callFunction(functions, functionName, args);
-            const responseAsText = await mcp.makeHumanReadable(functionResult);
-            response.content = responseAsText;
+            response.content = functionResult.human_readable;
         }
         return response;
     }// ./bridge
