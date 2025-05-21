@@ -153,36 +153,7 @@ export async function callFunction(functions, functionName, args) {
     result = func.response_mapping.path.split('.').reduce((obj, key) => obj?.[key], result);
   }
 
-  // Tambahkan generated text yang lebih informatif
-  try {
-    const humanReadableResult = await makeHumanReadable({
-      function_name: functionName,
-      function_description: func.description || '',
-      raw_result: result,
-      timestamp: new Date().toISOString()
-    });
-    
-    return {
-      raw_data: result,
-      human_readable: humanReadableResult,
-      metadata: {
-        function_name: functionName,
-        timestamp: new Date().toISOString(),
-        status: 'success'
-      }
-    };
-  } catch (error) {
-    console.error('Error generating human readable text:', error);
-    return {
-      raw_data: result,
-      human_readable: `Hasil dari fungsi ${functionName}: ${JSON.stringify(result, null, 2)}`,
-      metadata: {
-        function_name: functionName,
-        timestamp: new Date().toISOString(),
-        status: 'success_with_fallback'
-      }
-    };
-  }
+  return result;
 }
 
 export async function makeHumanReadable(params) {
