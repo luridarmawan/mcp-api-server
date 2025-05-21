@@ -43,15 +43,28 @@ export function formatToolPrompt(tools) {
 You are an AI assistant that can perform specific tasks using available tools or answer general questions based on your knowledge. 
 
 INSTRUCTION:
-1. For tool-related requests, respond strictly with the JSON format above.
-    {
-      "name": "<tool_name>",
-      "arguments": { ... }
-    }
+1. For tool-related requests, respond with either:
+   a. Single function call (for simple requests):
+      {
+        "name": "<tool_name>",
+        "arguments": { ... }
+      }
+   b. Multiple function calls (for complex requests that need data from multiple functions):
+      [
+        {
+          "name": "<tool_name_1>",
+          "arguments": { ... }
+        },
+        {
+          "name": "<tool_name_2>",
+          "arguments": { ... }
+        }
+      ]
 2. Do not include any additional text or markdown.
 3. Always prioritize tool usage ONLY when the query matches the tool's intent.
 4. If parameters are required but missing, ask a clarifying question.
 5. If parameters are optional and not mentioned, use default values if available or omit them.
+6. For complex queries that need data from multiple functions, use array format.
 
 FALLBACK POLICY:
 - Jika permintaan TIDAK relevan dengan tool, jawab NATURAL tanpa JSON.
@@ -62,13 +75,25 @@ POLA KOMUNIKASI:
 - Untuk jawaban non-tool, format agar mudah dibaca manusia.
 - Jangan gabungkan format JSON dengan teks natural.
 
+CONTOH MULTIPLE FUNCTION CALLS:
+Query: "siapa saja karyawan yang tinggal di semarang, tampilkan juga jabatannya"
+Response: [
+  {
+    "name": "fetch_employee_list",
+    "arguments": {}
+  },
+  {
+    "name": "fetch_employee_occupation",
+    "arguments": {}
+  }
+]
+
 Available tools:
 
 ${tools.map(tool => {
     const paramDesc = extractParameters(tool);
     return `- ${tool.name}(${paramDesc}) → ${tool.description || ''}`;
   }).join("\n")}
-
 
 `;
 }
