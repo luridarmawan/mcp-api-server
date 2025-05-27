@@ -149,7 +149,7 @@ export async function chatWithMCP(messages, functions) {
 
 }
 
-export async function callFunction(functions, functionName, args) {
+export async function callFunction(functions, functionName, args = {}) {
   const func = functions.find(f => f.name === functionName);
 
   if (!func) throw new Error(`Function ${functionName} not found.`);
@@ -158,30 +158,66 @@ export async function callFunction(functions, functionName, args) {
 
   let url = MCP_SERVER_URL + func.url;
   let method = func.method.toLowerCase();
-  if (method=='internal') method = 'post'
+  if (method === 'internal') method = 'post';
 
-  if (method === 'get' && args && Object.keys(args).length > 0) {
-    url += '?' + new URLSearchParams(args).toString();
+  // Penanganan parameter GET yang lebih aman
+  if (method === 'get' && args && typeof args === 'object' && Object.keys(args).length > 0) {
+    try {
+      const params = new URLSearchParams();
+
+      // Loop melalui semua properti args
+      for (const key in args) {
+        if (args.hasOwnProperty(key) && args[key] !== undefined && args[key] !== null) {
+          // Konversi nilai ke string
+          params.append(key, String(args[key]));
+        }
+      }
+
+      if (params.toString()) {
+        url += '?' + params.toString();
+      }
+    } catch (error) {
+      console.error('Error creating URL parameters:', error);
+      // Lanjutkan tanpa parameter daripada membatalkan
+    }
   }
-  url = url.replace(`//..`, `/..`);
-  url = url.replace(`??`, `?`);
+
+  // Bersihkan URL
+  url = url.replace(`//..`, `/..`).replace(`??`, `?`);
   utils.think(`  url: ${url}`);
   utils.think(`    args: ${JSON.stringify(args)}`);
 
-  const res = await axios({
-    method,
-    url,
-    data: method === 'post' ? args : undefined
-  });
+  // Eksekusi request
+  let result;
+  try {
+    const res = await axios({
+      method,
+      url,
+      data: method === 'post' ? args : undefined
+    });
 
-  let result = res.data;
-  if (func.response_mapping && func.response_mapping.path) {
-    result = func.response_mapping.path.split('.').reduce((obj, key) => obj?.[key], result);
+    result = res.data;
+
+    // Apply response mapping jika ada
+    if (func.response_mapping && func.response_mapping.path) {
+      result = func.response_mapping.path.split('.').reduce((obj, key) => {
+        return (obj !== null && obj !== undefined) ? obj[key] : undefined;
+      }, result);
+    }
+  } catch (error) {
+    console.error(`Error calling function ${functionName}:`, error);
+    return {
+      raw_data: null,
+      human_readable: `Gagal memanggil fungsi ${functionName}: ${error.message}`,
+      metadata: {
+        function_name: functionName,
+        timestamp: new Date().toISOString(),
+        status: 'error'
+      }
+    };
   }
 
-  // return result; <<-- simple result
-
-  // Tambahkan generated text yang lebih informatif
+  // Buat hasil yang lebih informatif
   try {
     const humanReadableResult = await makeHumanReadable({
       function_name: functionName,
@@ -211,7 +247,6 @@ export async function callFunction(functions, functionName, args) {
       }
     };
   }
-
 }
 
 export async function makeHumanReadable(params) {
