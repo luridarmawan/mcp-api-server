@@ -8,8 +8,8 @@ const rl = readline.createInterface({
 });
 
 async function main() {
-  console.log('🚀 MCP Agent ready. Type your question.');
-  let systemPrompt = await utils.readFile("data/prompt.txt");
+  console.log('🚀 MCP Bridge Agent ready. Type your question.');
+  let systemPrompt = await utils.readFile("data/prompt_system.txt");
   const messages = [{ role: 'system', content: systemPrompt}];
 
   while (true) {
