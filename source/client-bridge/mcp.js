@@ -65,6 +65,7 @@ INSTRUCTION:
 4. If parameters are required but missing, ask a clarifying question.
 5. If parameters are optional and not mentioned, use default values if available or omit them.
 6. For complex queries that need data from multiple functions, use array format.
+7. Dont change tool name.
 
 FALLBACK POLICY:
 - Jika permintaan TIDAK relevan dengan tool, jawab NATURAL tanpa JSON.
@@ -88,7 +89,7 @@ Response: [
   }
 ]
 
-Available tools:
+Available tools (USE EXACT NAME - DO NOT MODIFY):
 
 ${tools.map(tool => {
     const paramDesc = extractParameters(tool);
