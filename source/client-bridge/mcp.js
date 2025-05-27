@@ -258,7 +258,10 @@ export async function makeHumanReadable(params) {
     role: 'system', 
     content: promptHumanReadable
   }];
-  messages.push({role: 'assistant', content: JSON.stringify(params, null, 2)});
+  let text = `Kalimat yang diubah:\n ${params.raw_result}`;
+  //JSON.stringify(params.raw_result, null, 2)
+  messages.push({role: 'assistant', content: text});
+
   const response = await llm.chatCompletions(messages);
   let responseAsText = response.choices[0].message.content;
   return responseAsText
