@@ -152,6 +152,7 @@ export async function chatWithMCP(messages, functions) {
 
 export async function callFunction(functions, functionName, args = {}) {
   const func = functions.find(f => f.name === functionName);
+  //console.log("func: ", func)
 
   if (!func) throw new Error(`Function ${functionName} not found.`);
   utils.think(`call function: ${functionName}`, args);
@@ -181,6 +182,15 @@ export async function callFunction(functions, functionName, args = {}) {
       console.error('Error creating URL parameters:', error);
       // Lanjutkan tanpa parameter daripada membatalkan
     }
+  }
+
+  // reformat parameter if property_field exist
+  if (func.parameters?.property_field){
+    const property_field = func.parameters.property_field;
+    let tempArgs = {}
+    tempArgs['mcp'] = true;
+    tempArgs[property_field] = args;
+    args = tempArgs
   }
 
   // Bersihkan URL
@@ -264,5 +274,11 @@ export async function makeHumanReadable(params) {
 
   const response = await llm.chatCompletions(messages);
   let responseAsText = response.choices[0].message.content;
+  let formattedText = reformatText(responseAsText);
   return responseAsText
+}
+
+function reformatText(Text){
+
+  return Text;
 }
