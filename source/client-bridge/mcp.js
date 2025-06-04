@@ -145,7 +145,7 @@ export async function chatWithMCP(messages, functions) {
     function_call: parsed
   }
   buildedMessage.push(output)
-  utils.saveToFile("tmp.txt", JSON.stringify(buildedMessage, null, 2));
+  // utils.saveToFile("tmp.txt", JSON.stringify(buildedMessage, null, 2));
 
   return output;
 
