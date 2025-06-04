@@ -93,7 +93,8 @@ Available tools (USE EXACT NAME - DO NOT MODIFY):
 
 ${tools.map(tool => {
     const paramDesc = extractParameters(tool);
-    return `- ${tool.name}(${paramDesc}) → ${tool.description || ''}`;
+    let item = `- ${tool.name}(${paramDesc}) → ${tool.description || ''}`
+    return item;
   }).join("\n")}
 
 `;
@@ -104,7 +105,7 @@ function extractParameters(tool) {
 
   const props = tool.parameters.properties;
   return Object.entries(props)
-    .map(([key, val]) => `${key}: ${val.type || 'any'}`)
+    .map(([key, val]) => `${key} ${(val.required) ? '(required)' : ''}: ${val.type || 'any'}`)
     .join(", ");
 }
 

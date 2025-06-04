@@ -49,6 +49,7 @@ KETENTUAN KHUSUS:
 3. Untuk data kosong/null, berikan penjelasan yang informatif
 4. Untuk data array kosong, berikan konteks yang jelas
 5. Untuk timestamp, format ke format lokal yang mudah dibaca
+6. Tampilkan hasil apa adanya jika kalimat sumber tidak lengkap untuk dilakukan perubahan.
 
 CONTOH OUTPUT YANG BAIK:
 Input: {"prayer_times":{"fajr":"04:30","dhuhr":"12:00","asr":"15:30","maghrib":"18:00","isha":"19:30"}}
