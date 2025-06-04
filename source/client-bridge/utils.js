@@ -40,6 +40,13 @@ export function cleanMarkdownCodeBlocksNew(text) {
   return null; // Jika tidak ditemukan
 }
 
+export function reformatMarkdown(text) {
+  text = text.replace(/\*\*(.+?)\*\*/g, '%%$1%%');
+  text = text.replace(/(^|[^*])\*(?!\*)([^*]+?)\*(?!\*)/g, '$1_$2_');
+  text = text.replace(/%%(.+?)%%/g, '*$1*');
+  return text;
+}
+
 
 export function removeNestedThinkTags(text) {
   let result = text;

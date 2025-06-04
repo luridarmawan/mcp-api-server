@@ -274,11 +274,7 @@ export async function makeHumanReadable(params) {
 
   const response = await llm.chatCompletions(messages);
   let responseAsText = response.choices[0].message.content;
-  let formattedText = reformatText(responseAsText);
-  return responseAsText
+  let formattedText = utils.reformatMarkdown(responseAsText);
+  return formattedText
 }
 
-function reformatText(Text){
-
-  return Text;
-}
